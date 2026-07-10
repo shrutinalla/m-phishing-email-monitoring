@@ -1,0 +1,7 @@
+from database import engine
+from models import Base
+import tracking_models
+
+Base.metadata.create_all(bind=engine)
+
+print("Tables created successfully!")
