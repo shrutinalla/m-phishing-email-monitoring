@@ -21,13 +21,15 @@ def track_click(
 
     # Get client IP
     ip = request.client.host
+    user_agent = request.headers.get("user-agent")
 
     click = ClickLog(
-        employee_id=employee_id,
-        campaign_id=campaign_id,
-        clicked_time=datetime.now(),
-        ip_address=ip
-    )
+    employee_id=employee_id,
+    campaign_id=campaign_id,
+    clicked_time=datetime.now(),
+    ip_address=ip,
+    user_agent=user_agent
+)
 
     db.add(click)
     db.commit()

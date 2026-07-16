@@ -1,11 +1,10 @@
 from email.mime.text import MIMEText
 import smtplib
-
+from config import SMTP_HOST, SMTP_PORT, SMTP_EMAIL, SMTP_PASSWORD, BASE_URL
 
 def send_phishing_email(receiver_email, employee_id, campaign_id):
 
-    tracking_link = f"http://127.0.0.1:8000/track/{employee_id}/{campaign_id}"
-
+    tracking_link = f"{BASE_URL}/track/{employee_id}/{campaign_id}"
     body = f"""
     <html>
     <body>
@@ -25,22 +24,21 @@ def send_phishing_email(receiver_email, employee_id, campaign_id):
     msg = MIMEText(body, "html")
 
     msg["Subject"] = "Security Alert"
-    msg["From"] = "kusumabhavani.a@gmail.com"
+    msg["From"] = SMTP_EMAIL
     msg["To"] = receiver_email
-
-    server = smtplib.SMTP("smtp.gmail.com",587)
-
-    server.starttls()
-
-    server.login(
-        "kusumabhavani.a@gmail.com",
-        "bcolhzrlmhhbywpn"
-    )
-
-    server.sendmail(
-        "kusumabhavani.a@gmail.com",
-        receiver_email,
-        msg.as_string()
-    )
-
-    server.quit()
+    server = None
+    try:
+        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_EMAIL, SMTP_PASSWORD)
+        server.sendmail(SMTP_EMAIL, receiver_email, msg.as_string())
+        print("Email sent successfully.")
+    except Exception as e:
+        print(f"Error sending email: {e}")
+    finally:
+        if server:
+            try:
+                server.quit()
+            except Exception:
+                pass
+            
