@@ -8,3 +8,4 @@ class Campaign(Base):
     campaign_name = Column(String)
     email_subject = Column(String)
     email_template = Column(String)
+difficulty = Column(String, default="Easy") 
