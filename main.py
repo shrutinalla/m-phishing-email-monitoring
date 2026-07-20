@@ -13,6 +13,7 @@ from tracking import router as tracking_router
 from send_mail import router as mail_router
 from reports import router as reports_router
 from employees import router as employee_router
+from employee_upload import router as upload_router
 
 app = FastAPI()
 
@@ -20,56 +21,37 @@ app.include_router(tracking_router)
 app.include_router(mail_router)
 app.include_router(reports_router)
 app.include_router(employee_router)
+app.include_router(upload_router)
 @app.get("/")
 def home():
     return {"message": "Phishing Awareness System API Running"}
 
 
-@app.post("/employees")
-def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
-    
-    new_employee = Employee(
-        name=employee.name,
-        email=employee.email,
-        department=employee.department
-    )
 
-    db.add(new_employee)
-    db.commit()
-    db.refresh(new_employee)
 
-    return {
-        "message": "Employee added successfully",
-        "employee_id": new_employee.id
-    }
-@app.get("/employees")
-def get_employees(db: Session = Depends(get_db)):
-    employees = db.query(Employee).all()
+# @app.put("/employees/{employee_id}")
+# def update_employee(
+#     employee_id: int,
+#     clicked: bool,
+#     submitted_credentials: bool,
+#     db: Session = Depends(get_db)
+# ):
 
-    return employees
-@app.put("/employees/{employee_id}")
-def update_employee(
-    employee_id: int,
-    clicked: bool,
-    submitted_credentials: bool,
-    db: Session = Depends(get_db)
-):
+#     employee = db.query(Employee).filter(
+#         Employee.id == employee_id
+#     ).first()
 
-    employee = db.query(Employee).filter(
-        Employee.id == employee_id
-    ).first()
+#     if not employee:
+#         return {"message": "Employee not found"}
 
-    if not employee:
-        return {"message": "Employee not found"}
+#     employee.clicked = clicked
+#     employee.submitted_credentials = submitted_credentials
 
-    employee.clicked = clicked
-    employee.submitted_credentials = submitted_credentials
+#     db.commit()
 
-    db.commit()
-
-    return {
-        "message": "Employee updated successfully"
-    }
+#     return {
+#         "message": "Employee updated successfully"
+#     }
 @app.post("/campaigns")
 def create_campaign(
     campaign: CampaignCreate,
