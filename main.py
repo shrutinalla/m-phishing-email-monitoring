@@ -15,6 +15,7 @@ from reports import router as reports_router
 from employees import router as employee_router
 from employee_upload import router as upload_router
 from employee_pdf import router as pdf_router
+from campaigns import router as campaign_router
 
 
 app = FastAPI()
@@ -25,82 +26,13 @@ app.include_router(reports_router)
 app.include_router(employee_router)
 app.include_router(upload_router)
 app.include_router(pdf_router)
+app.include_router(campaign_router)
 
 @app.get("/")
 def home():
     return {"message": "Phishing Awareness System API Running"}
 
 
-
-
-# @app.put("/employees/{employee_id}")
-# def update_employee(
-#     employee_id: int,
-#     clicked: bool,
-#     submitted_credentials: bool,
-#     db: Session = Depends(get_db)
-# ):
-
-#     employee = db.query(Employee).filter(
-#         Employee.id == employee_id
-#     ).first()
-
-#     if not employee:
-#         return {"message": "Employee not found"}
-
-#     employee.clicked = clicked
-#     employee.submitted_credentials = submitted_credentials
-
-#     db.commit()
-
-#     return {
-#         "message": "Employee updated successfully"
-#     }
-@app.post("/campaigns")
-def create_campaign(
-    campaign: CampaignCreate,
-    db: Session = Depends(get_db)
-):
-
-    new_campaign = Campaign(
-    campaign_name=campaign.campaign_name,
-    email_subject=campaign.email_subject,
-    email_template=campaign.email_template,
-    difficulty=campaign.difficulty,
-    status=campaign.status
-    )
-
-    db.add(new_campaign)
-    db.commit()
-    db.refresh(new_campaign)
-
-    return {
-        "message": "Campaign created successfully",
-        "campaign_id": new_campaign.id
-    }
-
-
-@app.get("/campaigns")
-def get_campaigns(db: Session = Depends(get_db)):
-    return db.query(Campaign).all()
-
-@app.get("/campaigns/{campaign_id}")
-def get_campaign(
-    campaign_id: int,
-    db: Session = Depends(get_db)
-):
-
-    campaign = db.query(Campaign).filter(
-        Campaign.id == campaign_id
-    ).first()
-
-    if campaign is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Campaign not found"
-        )
-
-    return campaign
 @app.post("/templates")
 def create_template(
     template: TemplateCreate,

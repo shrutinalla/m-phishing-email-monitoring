@@ -1,4 +1,4 @@
-import { useState } from 'react'
+/*import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -120,3 +120,31 @@ function App() {
 }
 
 export default App
+*/
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/auth/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Employees from "./pages/employees/Employees";
+import ComposeCampaign from "./pages/campaigns/ComposeCampaign";
+import Reports from "./pages/reports/Reports";
+import WarningPage from "./pages/warning/WarningPage";
+import AwarenessPage from "./pages/awareness/AwarenessPage";
+
+import routes from "./utils/routes";
+
+function App() {
+  return (
+    <Routes>
+      <Route path={routes.LOGIN} element={<Login />} />
+      <Route path={routes.DASHBOARD} element={<Dashboard />} />
+      <Route path={routes.EMPLOYEES} element={<Employees />} />
+      <Route path={routes.CAMPAIGNS} element={<ComposeCampaign />} />
+      <Route path={routes.REPORTS} element={<Reports />} />
+      <Route path={routes.WARNING} element={<WarningPage />} />
+      <Route path={routes.AWARENESS} element={<AwarenessPage />} />
+    </Routes>
+  );
+}
+
+export default App;
