@@ -5,6 +5,7 @@ from datetime import datetime
 
 from database import get_db
 from tracking_models import ClickLog
+from models import Employee
 
 router = APIRouter()
 
@@ -32,6 +33,13 @@ def track_click(
 )
 
     db.add(click)
+    employee = (    
+        db.query(Employee)
+        .filter(Employee.id == employee_id)
+        .first()
+        )
+    if employee:
+        employee.clicked = True
     db.commit()
 
     return templates.TemplateResponse(
