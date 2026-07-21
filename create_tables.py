@@ -2,6 +2,7 @@ from database import engine
 from models import Base
 
 # Import all models so SQLAlchemy registers them
+import models
 import tracking_models
 import campaign_models
 import template_models

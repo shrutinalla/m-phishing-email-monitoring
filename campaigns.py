@@ -4,7 +4,16 @@ from sqlalchemy import or_
 
 from database import get_db
 from campaign_models import Campaign
-from campaign_schemas import CampaignCreate, CampaignUpdate
+from send_mail import send_phishing_email
+from models import Employee
+from tracking_models import ClickLog
+
+from campaign_schemas import (
+    CampaignCreate,
+    CampaignUpdate,
+    CampaignStatusUpdate,
+    CampaignSchedule
+)
 
 router = APIRouter()
 
@@ -111,6 +120,62 @@ def update_campaign(
 
     return {"message": "Campaign updated successfully"}
 
+@router.put("/campaigns/{campaign_id}/status")
+def update_campaign_status(
+    campaign_id: int,
+    status: str,
+    db: Session = Depends(get_db)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    campaign.status = status
+
+    db.commit()
+
+    return {
+        "message": "Campaign status updated successfully",
+        "status": campaign.status
+    }
+
+
+@router.put("/campaigns/{campaign_id}/schedule")
+def schedule_campaign(
+    campaign_id: int,
+    schedule: CampaignSchedule,
+    db: Session = Depends(get_db)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    campaign.start_date = schedule.start_date
+    campaign.end_date = schedule.end_date
+    campaign.status = "Scheduled"
+
+    db.commit()
+
+    return {
+        "message": "Campaign scheduled successfully",
+        "start_date": campaign.start_date,
+        "end_date": campaign.end_date,
+         "status": campaign.status
+    }
 
 @router.delete("/campaigns/{campaign_id}")
 def delete_campaign(campaign_id: int, db: Session = Depends(get_db)):
@@ -127,4 +192,165 @@ def delete_campaign(campaign_id: int, db: Session = Depends(get_db)):
 
     return {"message": "Campaign deleted successfully"}
 
+ 
 
+@router.get("/campaigns/status/{status}")
+def campaigns_by_status(
+    status: str,
+    db: Session = Depends(get_db)
+):
+
+    return db.query(Campaign).filter(
+        Campaign.status == status
+    ).all()
+
+@router.get("/campaigns/difficulty/{difficulty}")
+def campaigns_by_difficulty(
+    difficulty: str,
+    db: Session = Depends(get_db)
+):
+
+    return db.query(Campaign).filter(
+        Campaign.difficulty == difficulty
+    ).all()
+
+@router.get("/campaigns/statistics")
+def campaign_statistics(
+    db: Session = Depends(get_db)
+):
+
+    total = db.query(Campaign).count()
+
+    easy = db.query(Campaign).filter(
+        Campaign.difficulty == "Easy"
+    ).count()
+
+    medium = db.query(Campaign).filter(
+        Campaign.difficulty == "Medium"
+    ).count()
+
+    hard = db.query(Campaign).filter(
+        Campaign.difficulty == "Hard"
+    ).count()
+
+    return {
+        "total_campaigns": total,
+        "easy": easy,
+        "medium": medium,
+        "hard": hard
+    }
+
+
+@router.put("/campaigns/{campaign_id}/schedule")
+def schedule_campaign(
+    campaign_id: int,
+    schedule: CampaignSchedule,
+    db: Session = Depends(get_db)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    campaign.start_date = schedule.start_date
+    campaign.end_date = schedule.end_date
+    campaign.status = "Scheduled"
+
+    db.commit()
+
+    return {
+        "message": "Campaign scheduled successfully",
+        "start_date": campaign.start_date,
+        "end_date": campaign.end_date,
+        "status": campaign.status
+    }
+
+@router.post("/campaigns/{campaign_id}/send")
+def send_campaign(
+    campaign_id: int,
+    db: Session = Depends(get_db)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    employees = db.query(Employee).all()
+
+    sent = 0
+
+    for employee in employees:
+
+        send_phishing_email(
+            employee.email,
+            campaign.email_subject,
+            campaign.email_template,
+            employee.id,
+            campaign.id
+        )
+
+        sent += 1
+
+    campaign.status = "Running"
+    db.commit()
+
+    return {
+        "message": "Campaign emails sent successfully",
+        "emails_sent": sent
+    }
+
+@router.get("/campaigns/{campaign_id}/analytics")
+def campaign_analytics(
+    campaign_id: int,
+    db: Session = Depends(get_db)
+):
+
+    sent = db.query(Employee).count()
+
+    opened = db.query(ClickLog).filter(
+        ClickLog.campaign_id == campaign_id
+    ).count()
+
+    clicked = db.query(Employee).filter(
+        Employee.clicked == True
+    ).count()
+
+    submitted = db.query(Employee).filter(
+        Employee.submitted_credentials == True
+    ).count()
+
+    if sent == 0:
+        success_rate = 0
+    else:
+        success_rate = round(
+            (clicked / sent) * 100,
+            2
+        )
+
+    return {
+
+        "campaign_id": campaign_id,
+
+        "emails_sent": sent,
+
+        "emails_opened": opened,
+
+        "link_clicks": clicked,
+
+        "credentials_submitted": submitted,
+
+        "click_rate": success_rate
+
+    }

@@ -27,6 +27,13 @@ class CampaignUpdate(BaseModel):
 
     status: str
 
+class CampaignStatusUpdate(BaseModel):
+    status: str
+
+
+class CampaignSchedule(BaseModel):
+    start_date: datetime
+    end_date: datetime
 
 class CampaignResponse(BaseModel):
 

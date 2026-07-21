@@ -24,3 +24,6 @@ def get_db():
 
 from models import Base
 Base.metadata.create_all(bind=engine)
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+print("DATABASE_URL =", DATABASE_URL)
