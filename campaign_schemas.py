@@ -13,6 +13,7 @@ class CampaignCreate(BaseModel):
 
     difficulty: Optional[str] = "Easy"
     status: Optional[str] = "Draft"
+    template_id: Optional[int] = None
 
 
 class CampaignUpdate(BaseModel):
@@ -50,6 +51,8 @@ class CampaignResponse(BaseModel):
     status: str
 
     created_at: datetime
+
+    template_id: Optional[int]
 
     class Config:
         from_attributes = True

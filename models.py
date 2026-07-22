@@ -12,3 +12,5 @@ class Employee(Base):
     department = Column(String)
     clicked = Column(Boolean, default=False)
     submitted_credentials = Column(Boolean, default=False)
+    risk_score = Column(Integer, default=0)
+    risk_level = Column(String, default="Low")

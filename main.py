@@ -17,7 +17,11 @@ from employee_upload import router as upload_router
 from employee_pdf import router as pdf_router
 from campaigns import router as campaign_router
 from campaign_pdf import router as campaign_pdf_router
-
+from campaign_export import router as campaign_export_router
+from campaign_history import router as campaign_history_router
+from risk import router as risk_router
+from risk_pdf import router as risk_pdf_router
+from risk_excel import router as risk_excel_router
 
 app = FastAPI()
 
@@ -29,6 +33,11 @@ app.include_router(upload_router)
 app.include_router(pdf_router)
 app.include_router(campaign_router)
 app.include_router(campaign_pdf_router)
+app.include_router(campaign_export_router)
+app.include_router(campaign_history_router)
+app.include_router(risk_router)
+app.include_router(risk_pdf_router)
+app.include_router(risk_excel_router)
 
 @app.get("/")
 def home():
