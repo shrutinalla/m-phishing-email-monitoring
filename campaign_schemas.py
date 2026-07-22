@@ -54,5 +54,16 @@ class CampaignResponse(BaseModel):
 
     template_id: Optional[int]
 
+    start_date: Optional[datetime] = None
+
+    end_date: Optional[datetime] = None
+
+    total_recipients: int
+
+    emails_sent: int
+
+    emails_failed: int
+
+    completed_at: Optional[datetime] = None
     class Config:
         from_attributes = True

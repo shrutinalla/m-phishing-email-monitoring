@@ -28,4 +28,12 @@ class Campaign(Base):
 
     end_date = Column(DateTime, nullable=True)
 
+    total_recipients = Column(Integer, default=0)
+
+    emails_sent = Column(Integer, default=0)
+
+    emails_failed = Column(Integer, default=0)
+
+    completed_at = Column(DateTime, nullable=True)
+
    

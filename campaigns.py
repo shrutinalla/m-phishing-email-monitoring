@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
+from sqlalchemy import or_
 
 from database import get_db
 from campaign_models import Campaign
@@ -44,6 +44,14 @@ def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
 def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
     try:
         print("Received:", campaign)
+        existing_campaign = db.query(Campaign).filter(
+            Campaign.campaign_name == campaign.campaign_name
+            ).first()
+        if existing_campaign:
+            raise HTTPException(
+                status_code=400,
+                detail="Campaign name already exists"
+                )
 
         new_campaign = Campaign(
             campaign_name=campaign.campaign_name,
@@ -62,11 +70,15 @@ def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
             "message": "Campaign created successfully",
             "campaign_id": new_campaign.id
         }
-
+    except HTTPException:
+        raise
     except Exception as e:
         db.rollback()
         print("ERROR:", repr(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+         status_code=500,
+         detail="Internal Server Error"
+        )
 
 
 
@@ -406,36 +418,6 @@ def campaign_analytics(
         "submitted_credentials": submitted,
         "click_rate": f"{click_rate}%",
         "submission_rate": f"{submission_rate}%"
-    }
-
-@router.put("/campaigns/{campaign_id}/schedule")
-def schedule_campaign(
-    campaign_id: int,
-    schedule: CampaignSchedule,
-    db: Session = Depends(get_db)
-):
-
-    campaign = db.query(Campaign).filter(
-        Campaign.id == campaign_id
-    ).first()
-
-    if campaign is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Campaign not found"
-        )
-
-    campaign.start_date = schedule.start_date
-    campaign.end_date = schedule.end_date
-    campaign.status = "Scheduled"
-
-    db.commit()
-
-    return {
-        "message": "Campaign scheduled successfully",
-        "start_date": campaign.start_date,
-        "end_date": campaign.end_date,
-        "status": campaign.status
     }
 
 @router.put("/campaigns/{campaign_id}/use-template/{template_id}")
