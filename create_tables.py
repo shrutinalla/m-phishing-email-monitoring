@@ -6,6 +6,7 @@ import models
 import tracking_models
 import campaign_models
 import template_models
+import admin_models
 
 Base.metadata.create_all(bind=engine)
 
