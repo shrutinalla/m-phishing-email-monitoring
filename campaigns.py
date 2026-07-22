@@ -8,6 +8,7 @@ from send_mail import send_phishing_email
 from models import Employee
 from tracking_models import ClickLog
 from template_models import EmailTemplate
+from dependencies import get_current_admin
 
 from campaign_schemas import (
     CampaignCreate,
@@ -41,17 +42,23 @@ def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
     }'''
 
 @router.post("/campaigns")
-def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
+def create_campaign(
+    campaign: CampaignCreate,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
     try:
         print("Received:", campaign)
+
         existing_campaign = db.query(Campaign).filter(
             Campaign.campaign_name == campaign.campaign_name
-            ).first()
+        ).first()
+
         if existing_campaign:
             raise HTTPException(
                 status_code=400,
                 detail="Campaign name already exists"
-                )
+            )
 
         new_campaign = Campaign(
             campaign_name=campaign.campaign_name,
@@ -70,15 +77,19 @@ def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
             "message": "Campaign created successfully",
             "campaign_id": new_campaign.id
         }
+
     except HTTPException:
         raise
+
     except Exception as e:
         db.rollback()
         print("ERROR:", repr(e))
+
         raise HTTPException(
-         status_code=500,
-         detail="Internal Server Error"
+            status_code=500,
+            detail="Internal Server Error"
         )
+    
 
 
 
