@@ -23,6 +23,7 @@ from risk import router as risk_router
 from risk_pdf import router as risk_pdf_router
 from risk_excel import router as risk_excel_router
 from admin_auth import router as admin_router
+from templates import router as template_router
 
 app = FastAPI()
 
@@ -40,6 +41,7 @@ app.include_router(risk_router)
 app.include_router(risk_pdf_router)
 app.include_router(risk_excel_router)
 app.include_router(admin_router)
+app.include_router(template_router)
 
 @app.get("/")
 def home():
