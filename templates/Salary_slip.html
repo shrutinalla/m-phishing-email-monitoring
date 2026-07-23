@@ -1,0 +1,27 @@
+body = f"""
+<html>
+<body style="font-family:Arial,sans-serif;">
+
+<h2>Salary Slip Available</h2>
+
+<p>Dear {emp.name},</p>
+
+<p>
+Your salary slip for this month is now available.
+Click below to download it.
+</p>
+
+<p>
+<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
+Download Salary Slip
+</a>
+</p>
+
+<br>
+
+Finance Department<br>
+MIDHANI
+
+</body>
+</html>
+"""

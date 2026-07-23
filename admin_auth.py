@@ -59,10 +59,12 @@ def login_admin(
     admin: AdminLogin,
     db: Session = Depends(get_db)
 ):
-
+    print("Username entered:", admin.username)
     existing = db.query(Admin).filter(
         Admin.username == admin.username
     ).first()
+
+    print("Database result:", existing)
 
     if existing is None:
         raise HTTPException(
@@ -70,6 +72,12 @@ def login_admin(
             detail="Invalid username"
         )
 
+    print("Stored hash:", existing.hashed_password)
+    print("Password verification:",
+          authenticate_password(
+              admin.password,
+              existing.hashed_password
+          ))
     if not authenticate_password(
         admin.password,
         existing.hashed_password

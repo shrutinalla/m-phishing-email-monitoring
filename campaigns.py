@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+'''from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
@@ -8,7 +8,8 @@ from send_mail import send_phishing_email
 from models import Employee
 from tracking_models import ClickLog
 from template_models import EmailTemplate
-from dependencies import get_current_admin
+from auth_dependency import get_current_admin
+
 
 from campaign_schemas import (
     CampaignCreate,
@@ -20,7 +21,7 @@ from campaign_schemas import (
 router = APIRouter()
 
 
-'''@router.post("/campaigns")
+# @router.post("/campaigns")
 def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
 
     new_campaign = Campaign(
@@ -39,7 +40,7 @@ def create_campaign(campaign: CampaignCreate, db: Session = Depends(get_db)):
     return {
         "message": "Campaign created successfully",
         "campaign_id": new_campaign.id
-    }'''
+    }
 
 @router.post("/campaigns")
 def create_campaign(
@@ -154,7 +155,8 @@ def get_campaign(campaign_id: int, db: Session = Depends(get_db)):
 def update_campaign(
     campaign_id: int,
     updated: CampaignUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
 
     campaign = db.query(Campaign).filter(
@@ -326,7 +328,7 @@ def department_analytics(db: Session = Depends(get_db)):
     return result
 
 @router.delete("/campaigns/{campaign_id}")
-def delete_campaign(campaign_id: int, db: Session = Depends(get_db)):
+def delete_campaign(campaign_id: int, db: Session = Depends(get_db),admin: str = Depends(get_current_admin)):
 
     campaign = db.query(Campaign).filter(
         Campaign.id == campaign_id
@@ -552,4 +554,699 @@ def campaign_analytics(
 
         "click_rate": success_rate
 
+    }'''
+
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import or_
+
+from database import get_db
+from campaign_models import Campaign
+from models import Employee
+from tracking_models import ClickLog
+from template_models import EmailTemplate
+from auth_dependency import get_current_admin
+
+from campaign_schemas import (
+    CampaignCreate,
+    CampaignUpdate,
+    CampaignSchedule
+)
+
+
+router = APIRouter()
+
+
+# -------------------------------
+# CREATE CAMPAIGN
+# -------------------------------
+
+@router.post("/campaigns")
+def create_campaign(
+    campaign: CampaignCreate,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    existing_campaign = db.query(Campaign).filter(
+        Campaign.campaign_name == campaign.campaign_name
+    ).first()
+
+
+    if existing_campaign:
+        raise HTTPException(
+            status_code=400,
+            detail="Campaign name already exists"
+        )
+
+
+    new_campaign = Campaign(
+
+        campaign_name=campaign.campaign_name,
+
+        email_subject=campaign.email_subject,
+
+        email_template=campaign.email_template,
+
+        difficulty=campaign.difficulty,
+
+        status=campaign.status,
+
+        template_id=campaign.template_id
+    )
+
+
+    db.add(new_campaign)
+    db.commit()
+    db.refresh(new_campaign)
+
+
+    return {
+
+        "message": "Campaign created successfully",
+
+        "campaign_id": new_campaign.id
+
     }
+
+
+
+# -------------------------------
+# GET ALL CAMPAIGNS
+# -------------------------------
+
+@router.get("/campaigns")
+def get_campaigns(
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    return db.query(Campaign).all()
+
+
+
+# -------------------------------
+# SEARCH CAMPAIGN
+# -------------------------------
+
+@router.get("/campaigns/search")
+def search_campaign(
+    keyword: str,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaigns = db.query(Campaign).filter(
+
+        or_(
+
+            Campaign.campaign_name.ilike(
+                f"%{keyword}%"
+            ),
+
+            Campaign.email_subject.ilike(
+                f"%{keyword}%"
+            ),
+
+            Campaign.difficulty.ilike(
+                f"%{keyword}%"
+            ),
+
+            Campaign.status.ilike(
+                f"%{keyword}%"
+            )
+
+        )
+
+    ).all()
+
+
+    return campaigns
+
+
+
+# -------------------------------
+# CAMPAIGN DASHBOARD
+# -------------------------------
+
+@router.get("/campaigns/dashboard")
+def campaign_dashboard(
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    total = db.query(Campaign).count()
+
+
+    draft = db.query(Campaign).filter(
+        Campaign.status == "Draft"
+    ).count()
+
+
+    active = db.query(Campaign).filter(
+        Campaign.status == "Active"
+    ).count()
+
+
+    completed = db.query(Campaign).filter(
+        Campaign.status == "Completed"
+    ).count()
+
+
+
+    return {
+
+        "total_campaigns": total,
+
+        "draft_campaigns": draft,
+
+        "active_campaigns": active,
+
+        "completed_campaigns": completed
+
+    }
+
+
+
+# -------------------------------
+# GET SINGLE CAMPAIGN
+# -------------------------------
+
+@router.get("/campaigns/{campaign_id}")
+def get_campaign(
+    campaign_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    return campaign
+
+
+
+# -------------------------------
+# UPDATE CAMPAIGN
+# -------------------------------
+
+@router.put("/campaigns/{campaign_id}")
+def update_campaign(
+    campaign_id: int,
+    updated: CampaignUpdate,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    campaign.campaign_name = updated.campaign_name
+
+    campaign.email_subject = updated.email_subject
+
+    campaign.email_template = updated.email_template
+
+    campaign.difficulty = updated.difficulty
+
+    campaign.status = updated.status
+
+
+    db.commit()
+
+
+    return {
+
+        "message":
+        "Campaign updated successfully"
+
+    }
+
+
+
+# -------------------------------
+# UPDATE CAMPAIGN STATUS
+# -------------------------------
+
+@router.put("/campaigns/{campaign_id}/status")
+def update_campaign_status(
+    campaign_id: int,
+    status: str,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    campaign.status = status
+
+    db.commit()
+
+
+    return {
+
+        "message":
+        "Campaign status updated successfully",
+
+        "status":
+        campaign.status
+
+    }
+
+
+
+# -------------------------------
+# SCHEDULE CAMPAIGN
+# -------------------------------
+
+@router.put("/campaigns/{campaign_id}/schedule")
+def schedule_campaign(
+    campaign_id: int,
+    schedule: CampaignSchedule,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    campaign.start_date = schedule.start_date
+
+    campaign.end_date = schedule.end_date
+
+    campaign.status = "Scheduled"
+
+
+    db.commit()
+
+
+    return {
+
+        "message":
+        "Campaign scheduled successfully",
+
+        "status":
+        campaign.status,
+
+        "start_date":
+        campaign.start_date,
+
+        "end_date":
+        campaign.end_date
+
+    }
+# -------------------------------
+# CAMPAIGN ANALYTICS
+# -------------------------------
+
+@router.get("/campaigns/{campaign_id}/analytics")
+def campaign_analytics(
+    campaign_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    emails_sent = db.query(Employee).count()
+
+
+    emails_opened = db.query(ClickLog).filter(
+        ClickLog.campaign_id == campaign_id
+    ).count()
+
+
+    link_clicks = db.query(ClickLog).filter(
+        ClickLog.campaign_id == campaign_id
+    ).count()
+
+
+    submitted = db.query(Employee).filter(
+        Employee.submitted_credentials == True
+    ).count()
+
+
+
+    click_rate = 0
+
+
+    if emails_sent > 0:
+
+        click_rate = round(
+            (link_clicks / emails_sent) * 100,
+            2
+        )
+
+
+    return {
+
+        "campaign_id": campaign.id,
+
+        "campaign_name": campaign.campaign_name,
+
+        "emails_sent": emails_sent,
+
+        "emails_opened": emails_opened,
+
+        "link_clicks": link_clicks,
+
+        "credentials_submitted": submitted,
+
+        "click_rate": click_rate
+
+    }
+
+
+
+# -------------------------------
+# DEPARTMENT ANALYTICS
+# -------------------------------
+
+@router.get("/campaigns/departments/analytics")
+def department_analytics(
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    departments = db.query(
+        Employee.department
+    ).distinct().all()
+
+
+    result = []
+
+
+    for dept in departments:
+
+        department = dept[0]
+
+
+        total = db.query(Employee).filter(
+            Employee.department == department
+        ).count()
+
+
+        clicked = db.query(Employee).filter(
+            Employee.department == department,
+            Employee.clicked == True
+        ).count()
+
+
+        submitted = db.query(Employee).filter(
+            Employee.department == department,
+            Employee.submitted_credentials == True
+        ).count()
+
+
+
+        risk = 0
+
+
+        if total > 0:
+
+            risk = round(
+                (clicked / total) * 100,
+                2
+            )
+
+
+        result.append({
+
+            "department": department,
+
+            "employees": total,
+
+            "clicked": clicked,
+
+            "submitted_credentials": submitted,
+
+            "risk_score": risk
+
+        })
+
+
+    return result
+
+
+
+
+# -------------------------------
+# DELETE CAMPAIGN
+# -------------------------------
+
+@router.delete("/campaigns/{campaign_id}")
+def delete_campaign(
+    campaign_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+    db.delete(campaign)
+
+    db.commit()
+
+
+    return {
+
+        "message":
+        "Campaign deleted successfully"
+
+    }
+
+
+
+
+# -------------------------------
+# CAMPAIGNS BY STATUS
+# -------------------------------
+
+@router.get("/campaigns/status/{status}")
+def campaigns_by_status(
+    status: str,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    return db.query(Campaign).filter(
+        Campaign.status == status
+    ).all()
+
+
+
+
+# -------------------------------
+# CAMPAIGNS BY DIFFICULTY
+# -------------------------------
+
+@router.get("/campaigns/difficulty/{difficulty}")
+def campaigns_by_difficulty(
+    difficulty: str,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    return db.query(Campaign).filter(
+        Campaign.difficulty == difficulty
+    ).all()
+
+
+
+
+# -------------------------------
+# CAMPAIGN STATISTICS
+# -------------------------------
+
+@router.get("/campaigns/statistics")
+def campaign_statistics(
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    total = db.query(Campaign).count()
+
+
+    easy = db.query(Campaign).filter(
+        Campaign.difficulty == "Easy"
+    ).count()
+
+
+    medium = db.query(Campaign).filter(
+        Campaign.difficulty == "Medium"
+    ).count()
+
+
+    hard = db.query(Campaign).filter(
+        Campaign.difficulty == "Hard"
+    ).count()
+
+
+
+    return {
+
+        "total_campaigns": total,
+
+        "easy": easy,
+
+        "medium": medium,
+
+        "hard": hard
+
+    }
+
+
+
+
+
+# -------------------------------
+# LINK TEMPLATE TO CAMPAIGN
+# -------------------------------
+
+@router.put("/campaigns/{campaign_id}/use-template/{template_id}")
+def use_template(
+    campaign_id: int,
+    template_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+
+
+    if campaign is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+
+
+    template = db.query(EmailTemplate).filter(
+        EmailTemplate.id == template_id
+    ).first()
+
+
+
+    if template is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Template not found"
+        )
+
+
+
+    campaign.template_id = template.id
+
+    campaign.email_subject = template.subject
+
+    campaign.email_template = template.content
+
+
+    db.commit()
+    db.refresh(campaign)
+
+    return {
+        "message": "Template assigned successfully",
+        "campaign_id": campaign.id,
+        "campaign_name": campaign.campaign_name,
+        "template_id": template.id,
+        "template_name": template.template_name,
+        "subject": campaign.email_subject
+    }
+@router.delete("/campaigns/{campaign_id}/template")
+def remove_template(
+    campaign_id: int,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    campaign.template_id = None
+    campaign.email_subject = ""
+    campaign.email_template = ""
+
+    db.commit()
+
+    return {
+        "message": "Template removed successfully"
+    }
+

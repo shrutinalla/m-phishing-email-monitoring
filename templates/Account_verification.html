@@ -1,0 +1,32 @@
+body = f"""
+<html>
+<body style="font-family:Arial,sans-serif;">
+
+<h2>MIDHANI IT Department</h2>
+
+<p>Dear {emp.name},</p>
+
+<p>
+Our systems have detected unusual activity on your employee account.
+For security reasons, please verify your account immediately.
+</p>
+
+<p>
+<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}"
+style="background:#0d6efd;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">
+Verify Account
+</a>
+</p>
+
+<p>
+Failure to verify your account within 24 hours may result in temporary account suspension.
+</p>
+
+<br>
+
+Regards,<br>
+MIDHANI IT Security Team
+
+</body>
+</html>
+"""

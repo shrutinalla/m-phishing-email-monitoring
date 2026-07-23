@@ -24,7 +24,13 @@ from risk_pdf import router as risk_pdf_router
 from risk_excel import router as risk_excel_router
 from admin_auth import router as admin_router
 from templates import router as template_router
-
+from fastapi import BackgroundTasks
+from email_sender import send_phishing_email
+from click_tracking import router as click_router
+from analytics import router as analytics_router
+from send_mail import router as mail_router
+from email_logs import router as email_logs_router
+from live_tracking import router as live_tracking_router
 app = FastAPI()
 
 app.include_router(tracking_router)
@@ -42,6 +48,12 @@ app.include_router(risk_pdf_router)
 app.include_router(risk_excel_router)
 app.include_router(admin_router)
 app.include_router(template_router)
+app.include_router(click_router)
+app.include_router(analytics_router)
+app.include_router(mail_router)
+app.include_router(email_logs_router)
+app.include_router(live_tracking_router)
+
 
 @app.get("/")
 def home():
@@ -73,3 +85,17 @@ def create_template(
 @app.get("/templates")
 def get_templates(db: Session = Depends(get_db)):
     return db.query(EmailTemplate).all()
+
+@app.post("/test-email")
+async def test_email(background_tasks: BackgroundTasks):
+
+    background_tasks.add_task(
+        send_phishing_email,
+        "shrutin011004@gmail.com",
+        "Testing Email",
+        "<h2>Hello from MIDHANI</h2>"
+    )
+
+    return {
+        "message": "Email sent"
+    }

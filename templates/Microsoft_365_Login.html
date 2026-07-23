@@ -1,0 +1,26 @@
+body = f"""
+<html>
+<body style="font-family:Arial,sans-serif;">
+
+<h2>Microsoft 365 Security Alert</h2>
+
+<p>Dear {emp.name},</p>
+
+<p>
+A login attempt from a new device has been detected.
+If this was not you, please verify your account immediately.
+</p>
+
+<p>
+<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
+Review Login Activity
+</a>
+</p>
+
+<br>
+
+Microsoft Security Team
+
+</body>
+</html>
+"""

@@ -4,7 +4,7 @@ from sqlalchemy import or_
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from openpyxl import Workbook
-
+from auth_dependency import get_current_admin
 from database import get_db
 from models import Employee
 
@@ -23,7 +23,7 @@ class EmployeeUpdate(BaseModel):
 
 
 @router.post("/employees")
-def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
+def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db),admin: str = Depends(get_current_admin)):
 
     emp = Employee(
         name=employee.name,
