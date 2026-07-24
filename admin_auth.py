@@ -14,7 +14,7 @@ from security import (
     authenticate_password
 )
 from auth_token import create_access_token
-from auth_dependency import get_current_admin
+from auth import get_current_admin
 from audit_models import AuditLog
 
 
@@ -194,4 +194,27 @@ def change_password(
 
     return {
         "message": "Password changed successfully"
+    }
+
+    #admin-logout
+
+@router.post("/admin/logout")
+def logout_admin(
+    current_admin: str = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    # Audit Log - Admin Logout
+    log = AuditLog(
+        action="Admin Logout",
+        performed_by=current_admin,
+        module="Authentication",
+        details="Administrator logged out of the system",
+        timestamp=datetime.utcnow()
+    )
+
+    db.add(log)
+    db.commit()
+
+    return {
+        "message": "Logged out successfully"
     }
