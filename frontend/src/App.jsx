@@ -131,18 +131,67 @@ import Reports from "./pages/reports/Reports";
 import WarningPage from "./pages/warning/WarningPage";
 import AwarenessPage from "./pages/awareness/AwarenessPage";
 
+import ProtectedRoute from "./components/common/ProtectedRoute";
 import routes from "./utils/routes";
 
 function App() {
   return (
     <Routes>
       <Route path={routes.LOGIN} element={<Login />} />
-      <Route path={routes.DASHBOARD} element={<Dashboard />} />
-      <Route path={routes.EMPLOYEES} element={<Employees />} />
-      <Route path={routes.CAMPAIGNS} element={<ComposeCampaign />} />
-      <Route path={routes.REPORTS} element={<Reports />} />
-      <Route path={routes.WARNING} element={<WarningPage />} />
-      <Route path={routes.AWARENESS} element={<AwarenessPage />} />
+
+      <Route
+        path={routes.DASHBOARD}
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={routes.EMPLOYEES}
+        element={
+          <ProtectedRoute>
+            <Employees />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={routes.CAMPAIGNS}
+        element={
+          <ProtectedRoute>
+            <ComposeCampaign />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={routes.REPORTS}
+        element={
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={routes.WARNING}
+        element={
+          <ProtectedRoute>
+            <WarningPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={routes.AWARENESS}
+        element={
+          <ProtectedRoute>
+            <AwarenessPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

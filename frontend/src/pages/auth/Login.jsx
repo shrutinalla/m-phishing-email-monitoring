@@ -1,5 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+
+import api from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+
 import "./Login.css";
 
 function Login() {
@@ -13,26 +18,55 @@ function Login() {
 
     const [error, setError] = useState("");
 
+    const navigate = useNavigate();
+    
+    const { login } = useAuth();
+
     const handleSubmit = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        setLoading(true);
+    setLoading(true);
 
-        setError("");
+    setError("");
 
-        console.log({
+    try {
+
+        const response = await api.post("/admin/login", {
+
             username,
+
             password
+
         });
 
-        setTimeout(() => {
+        login(response.data.access_token);
 
-            setLoading(false);
-
-        },1500);
+        navigate("/dashboard");
 
     }
+
+    catch (err) {
+
+        console.error(err);
+
+        setError(
+
+            err.response?.data?.detail ||
+
+            "Invalid username or password."
+
+        );
+
+    }
+
+    finally {
+
+        setLoading(false);
+
+    }
+
+};
 
     return (
 
