@@ -10,3 +10,7 @@ class AdminRegister(BaseModel):
 class AdminLogin(BaseModel):
     username: str
     password: str
+
+class ChangePassword(BaseModel):
+    old_password: str
+    new_password: str

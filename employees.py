@@ -4,9 +4,13 @@ from sqlalchemy import or_
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from openpyxl import Workbook
+from datetime import datetime
+
 from auth_dependency import get_current_admin
 from database import get_db
 from models import Employee
+from audit_models import AuditLog
+
 
 router = APIRouter()
 
@@ -16,14 +20,23 @@ class EmployeeCreate(BaseModel):
     email: str
     department: str
 
+
 class EmployeeUpdate(BaseModel):
     name: str
     email: str
     department: str
 
 
+
+# -----------------------------
+# Add Employee
+# -----------------------------
 @router.post("/employees")
-def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db),admin: str = Depends(get_current_admin)):
+def create_employee(
+    employee: EmployeeCreate,
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
 
     emp = Employee(
         name=employee.name,
@@ -35,17 +48,42 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db),admi
     db.commit()
     db.refresh(emp)
 
+
+    # Audit Log
+    log = AuditLog(
+        action="Employee Added",
+        performed_by=admin,
+        module="Employee",
+        details=f"Employee '{emp.name}' added",
+        timestamp=datetime.utcnow()
+    )
+
+    db.add(log)
+    db.commit()
+
+
     return {
         "message": "Employee added successfully",
         "employee_id": emp.id
     }
 
 
+
+# -----------------------------
+# Get All Employees
+# -----------------------------
 @router.get("/employees")
-def get_employees(db: Session = Depends(get_db)):
+def get_employees(
+    db: Session = Depends(get_db)
+):
 
     return db.query(Employee).all()
 
+
+
+# -----------------------------
+# Get Employees By Department
+# -----------------------------
 @router.get("/employees/department/{department}")
 def get_department_employees(
     department: str,
@@ -58,6 +96,11 @@ def get_department_employees(
 
     return employees
 
+
+
+# -----------------------------
+# Employee Statistics
+# -----------------------------
 @router.get("/employees/statistics")
 def employee_statistics(
     db: Session = Depends(get_db)
@@ -75,6 +118,7 @@ def employee_statistics(
 
     safe = total - clicked
 
+
     return {
 
         "total_employees": total,
@@ -87,6 +131,11 @@ def employee_statistics(
 
     }
 
+
+
+# -----------------------------
+# Employee Dashboard
+# -----------------------------
 @router.get("/employees/dashboard")
 def employee_dashboard(
     db: Session = Depends(get_db)
@@ -102,14 +151,18 @@ def employee_dashboard(
         Employee.submitted_credentials == True
     ).count()
 
+
     high = submitted
+
 
     medium = db.query(Employee).filter(
         Employee.clicked == True,
         Employee.submitted_credentials == False
     ).count()
 
+
     low = total - high - medium
+
 
     return {
 
@@ -128,6 +181,12 @@ def employee_dashboard(
         "low_risk": low
 
     }
+
+
+
+# -----------------------------
+# Employee Risk
+# -----------------------------
 @router.get("/employees/risk/{employee_id}")
 def employee_risk(
     employee_id: int,
@@ -138,23 +197,23 @@ def employee_risk(
         Employee.id == employee_id
     ).first()
 
+
     if employee is None:
         raise HTTPException(
             status_code=404,
             detail="Employee not found"
         )
 
-    if employee.submitted_credentials:
 
+    if employee.submitted_credentials:
         risk = "High"
 
     elif employee.clicked:
-
         risk = "Medium"
 
     else:
-
         risk = "Low"
+
 
     return {
 
@@ -168,6 +227,11 @@ def employee_risk(
 
     }
 
+
+
+# -----------------------------
+# Employee Profile
+# -----------------------------
 @router.get("/employees/profile/{employee_id}")
 def employee_profile(
     employee_id: int,
@@ -178,11 +242,13 @@ def employee_profile(
         Employee.id == employee_id
     ).first()
 
+
     if employee is None:
         raise HTTPException(
             status_code=404,
             detail="Employee not found"
         )
+
 
     if employee.submitted_credentials:
         risk = "High"
@@ -192,6 +258,7 @@ def employee_profile(
 
     else:
         risk = "Low"
+
 
     return {
 
@@ -210,16 +277,24 @@ def employee_profile(
         "risk_level": risk
 
     }
+
+
+
+# -----------------------------
+# Update Employee
+# -----------------------------
 @router.put("/employees/{employee_id}")
 def update_employee(
     employee_id: int,
     employee: EmployeeUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
 
     emp = db.query(Employee).filter(
         Employee.id == employee_id
     ).first()
+
 
     if emp is None:
         raise HTTPException(
@@ -227,12 +302,31 @@ def update_employee(
             detail="Employee not found"
         )
 
+
     emp.name = employee.name
     emp.email = employee.email
     emp.department = employee.department
 
+
     db.commit()
     db.refresh(emp)
+
+
+
+    # Audit Log
+    log = AuditLog(
+        action="Employee Updated",
+        performed_by=admin,
+        module="Employee",
+        details=f"Employee '{emp.name}' updated",
+        timestamp=datetime.utcnow()
+    )
+
+
+    db.add(log)
+    db.commit()
+
+
 
     return {
         "message": "Employee updated successfully",
@@ -245,6 +339,10 @@ def update_employee(
     }
 
 
+
+# -----------------------------
+# Search Employee
+# -----------------------------
 @router.get("/employees/search")
 def search_employee(
     keyword: str,
@@ -265,18 +363,25 @@ def search_employee(
 
     ).all()
 
+
     return employees
 
 
+
+# -----------------------------
+# Delete Employee
+# -----------------------------
 @router.delete("/employees/{employee_id}")
 def delete_employee(
     employee_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
 
     employee = db.query(Employee).filter(
         Employee.id == employee_id
     ).first()
+
 
     if employee is None:
         raise HTTPException(
@@ -284,19 +389,51 @@ def delete_employee(
             detail="Employee not found"
         )
 
+
+    employee_name = employee.name
+
+
     db.delete(employee)
     db.commit()
+
+
+
+    # Audit Log
+    log = AuditLog(
+        action="Employee Deleted",
+        performed_by=admin,
+        module="Employee",
+        details=f"Employee '{employee_name}' deleted",
+        timestamp=datetime.utcnow()
+    )
+
+
+    db.add(log)
+    db.commit()
+
+
 
     return {
         "message": "Employee deleted successfully"
     }
+
+
+
+# -----------------------------
+# Export Employees
+# -----------------------------
 @router.get("/employees/export")
-def export_employees(db: Session = Depends(get_db)):
+def export_employees(
+    db: Session = Depends(get_db)
+):
 
     employees = db.query(Employee).all()
 
+
     workbook = Workbook()
+
     sheet = workbook.active
+
 
     sheet.append([
         "ID",
@@ -307,24 +444,42 @@ def export_employees(db: Session = Depends(get_db)):
         "Submitted Credentials"
     ])
 
+
     for emp in employees:
+
         sheet.append([
+
             emp.id,
+
             emp.name,
+
             emp.email,
+
             emp.department,
+
             emp.clicked,
+
             emp.submitted_credentials
+
         ])
 
+
     filename = "employees.xlsx"
+
     workbook.save(filename)
+
 
     return FileResponse(
         filename,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         filename=filename
     )
+
+
+
+# -----------------------------
+# Get Single Employee
+# -----------------------------
 @router.get("/employees/{employee_id}")
 def get_employee(
     employee_id: int,
@@ -335,10 +490,12 @@ def get_employee(
         Employee.id == employee_id
     ).first()
 
+
     if employee is None:
         raise HTTPException(
             status_code=404,
             detail="Employee not found"
         )
+
 
     return employee

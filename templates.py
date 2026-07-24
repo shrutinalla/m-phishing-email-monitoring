@@ -183,6 +183,8 @@ from template_models import EmailTemplate
 from template_schemas import TemplateCreate
 from campaign_models import Campaign
 from auth_dependency import get_current_admin
+from audit_models import AuditLog
+from datetime import datetime
 
 router = APIRouter()
 
@@ -215,6 +217,19 @@ def create_template(
     db.add(new_template)
     db.commit()
     db.refresh(new_template)
+     # -----------------------------
+# Audit Log
+# -----------------------------
+
+    log = AuditLog(
+    action="Template Created",
+    performed_by=admin,
+    module="Template",
+    details=f"Template '{new_template.template_name}' created",
+    timestamp=datetime.utcnow()
+)
+    db.add(log)
+    db.commit()
 
     return {
         "message": "Template created successfully",

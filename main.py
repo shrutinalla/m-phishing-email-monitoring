@@ -26,15 +26,16 @@ from admin_auth import router as admin_router
 from templates import router as template_router
 from fastapi import BackgroundTasks
 from email_sender import send_phishing_email
-from click_tracking import router as click_router
 from analytics import router as analytics_router
-from send_mail import router as mail_router
 from email_logs import router as email_logs_router
 from live_tracking import router as live_tracking_router
+from dashboard import router as dashboard_router
+from notifications import router as notification_router
+from audit_logs import router as audit_router
+
 app = FastAPI()
 
 app.include_router(tracking_router)
-app.include_router(mail_router)
 app.include_router(reports_router)
 app.include_router(employee_router)
 app.include_router(upload_router)
@@ -48,43 +49,18 @@ app.include_router(risk_pdf_router)
 app.include_router(risk_excel_router)
 app.include_router(admin_router)
 app.include_router(template_router)
-app.include_router(click_router)
 app.include_router(analytics_router)
 app.include_router(mail_router)
 app.include_router(email_logs_router)
 app.include_router(live_tracking_router)
-
+app.include_router(dashboard_router)
+app.include_router(notification_router)
+app.include_router(audit_router)
 
 @app.get("/")
 def home():
     return {"message": "Phishing Awareness System API Running"}
 
-
-@app.post("/templates")
-def create_template(
-    template: TemplateCreate,
-    db: Session = Depends(get_db)
-):
-
-    new_template = EmailTemplate(
-        template_name=template.template_name,
-        subject=template.subject,
-        content=template.content
-    )
-
-    db.add(new_template)
-    db.commit()
-    db.refresh(new_template)
-
-    return {
-        "message": "Template created successfully",
-        "template_id": new_template.id
-    }
-
-
-@app.get("/templates")
-def get_templates(db: Session = Depends(get_db)):
-    return db.query(EmailTemplate).all()
 
 @app.post("/test-email")
 async def test_email(background_tasks: BackgroundTasks):
