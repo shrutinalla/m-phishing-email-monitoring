@@ -63,15 +63,15 @@ body{
 
     border-radius:18px;
 
-    background:rgba(10,18,38,.16);
+    background:rgba(12,22,48,.32);
 
     backdrop-filter:blur(30px);
     -webkit-backdrop-filter:blur(30px);
 
-    border:1px solid rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.15);
 
     box-shadow:
-        0 8px 30px rgba(0,0,0,.28);
+    0 20px 60px rgba(0,0,0,.45);
 
     animation:fadeIn .6s ease;
 
@@ -190,7 +190,8 @@ body{
     border-color:#3b82f6;
 
     box-shadow:
-    0 0 12px rgba(59,130,246,.18);
+0 0 0 3px rgba(59,130,246,.18),
+0 0 15px rgba(59,130,246,.22);
 
 }
 
@@ -200,9 +201,9 @@ body{
 
 .icon{
 
-    font-size:13px;
+    font-size:18px;
 
-    width:13px;
+    width:22px;
 
     color:white;
 
@@ -216,7 +217,7 @@ body{
 
 .eye{
 
-    font-size:13px;
+    font-size:17px;
 
     color:white;
 
@@ -242,7 +243,7 @@ body{
 
     flex:1;
 
-    height:44px;
+    height:52px;
 
     border:none;
 
@@ -252,7 +253,7 @@ body{
 
     color:white;
 
-    font-size:15px;
+    font-size:16px;
 
 }
 
@@ -272,39 +273,38 @@ body{
 
     margin-top:12px;
 
-    padding:11px;
+    padding:13px;
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
     cursor:pointer;
 
     font-size:15px;
 
-    font-weight:600;
+    font-weight:700;
+
+    letter-spacing:.4px;
 
     color:white;
 
-    background:
-
-    linear-gradient(
-        90deg,
+    background:linear-gradient(
+        135deg,
         #2563eb,
-        #3b82f6
+        #60a5fa
     );
 
-    transition:.25s;
+    transition:.3s ease;
 
 }
 
 .login-btn:hover{
 
-    transform:translateY(-1px);
+    transform:translateY(-2px);
 
     box-shadow:
-
-    0 8px 18px rgba(37,99,235,.28);
+        0 12px 28px rgba(37,99,235,.40);
 
 }
 
@@ -330,15 +330,15 @@ body{
 
     margin-bottom:12px;
 
-    padding:10px;
+    padding:12px;
 
     border-radius:8px;
 
-    background:#7f1d1d;
+    background:rgba(185,28,28,.92);
 
     color:white;
 
-    font-size:13px;
+    font-size:14px;
 
 }
 
@@ -434,11 +434,13 @@ body{
 
     text-align:center;
 
-    color:#60a5fa;
+    color:#93c5fd;
 
-    font-size:12px;
+    font-size:13px;
 
-    opacity:.95;
+    letter-spacing:.5px;
+
+    opacity:.92;
 
 }
 
@@ -450,11 +452,13 @@ body{
 
 .login-card{
 
-    width:320px;
+    width:92%;
+
+    max-width:360px;
 
     margin-left:0;
 
-}
+    padding:22px;
 
 }
 
@@ -480,4 +484,5 @@ body{
 
 }
 
+}
 }

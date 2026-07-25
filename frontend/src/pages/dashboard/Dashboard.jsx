@@ -7,6 +7,8 @@ import {
   FaArrowUp,
 } from "react-icons/fa";
 import "./Dashboard.css";
+import { useEffect, useState } from "react";
+import { getDashboard } from "../../services/dashboardService";
 
 const recentCampaigns = [
   {
@@ -26,7 +28,27 @@ const recentCampaigns = [
   },
 ];
 
-function Dashboard() {
+  function Dashboard() {
+
+  const [stats, setStats] = useState({
+    total_employees: 0,
+    clicked: 0,
+    high_risk: 0,
+    safe: 0,
+  });
+
+  const loadDashboard = async () => {
+    try {
+      const data = await getDashboard();
+      setStats(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
   return (
     <DashboardLayout>
       <div className="dashboard">
@@ -54,7 +76,7 @@ function Dashboard() {
             </div>
 
             <div>
-              <h2>245</h2>
+              <h2>{stats.total_employees}</h2>
               <span>Total Employees</span>
             </div>
 
@@ -67,8 +89,8 @@ function Dashboard() {
             </div>
 
             <div>
-              <h2>18</h2>
-              <span>Campaigns</span>
+              <h2>{stats.high_risk}</h2>
+              <span>High Risk</span>
             </div>
 
           </div>
@@ -80,7 +102,7 @@ function Dashboard() {
             </div>
 
             <div>
-              <h2>42</h2>
+              <h2>{stats.clicked}</h2>
               <span>Phishing Clicks</span>
             </div>
 
@@ -93,8 +115,8 @@ function Dashboard() {
             </div>
 
             <div>
-              <h2>82%</h2>
-              <span>Security Score</span>
+              <h2>{stats.safe}</h2>
+              <span>Safe Employees</span>
             </div>
 
           </div>

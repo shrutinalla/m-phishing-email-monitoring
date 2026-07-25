@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import {FaUserCircle,FaLock,FaEye,FaEyeSlash,} from "react-icons/fa";
 
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -41,7 +41,8 @@ function Login() {
         });
 
         login(response.data.access_token);
-
+        localStorage.setItem("username", username);
+        localStorage.setItem("isAuthenticated", "true");
         navigate("/dashboard");
 
     }
@@ -87,27 +88,17 @@ function Login() {
                     <div className="input-group">
 
                         <label>Username</label>
-
                         <div className="input-box">
-
-                            <FaUser className="icon"/>
-
+                            <FaUserCircle className="icon"/>
                             <input
-
-                                type="text"
-
-                                placeholder="Enter Username"
-
-                                value={username}
-
-                                onChange={(e)=>setUsername(e.target.value)}
-
-                                required
-
+                            type="text"
+                            placeholder="Enter Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            autoComplete="username"
+                            required
                             />
-
-                        </div>
-
+                            </div>
                     </div>
 
                     <div className="input-group">
@@ -119,17 +110,12 @@ function Login() {
                             <FaLock className="icon"/>
 
                             <input
-
-                                type={showPassword ? "text" : "password"}
-
-                                placeholder="Enter Password"
-
-                                value={password}
-
-                                onChange={(e)=>setPassword(e.target.value)}
-
-                                required
-
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
+                            required
                             />
 
                             <span

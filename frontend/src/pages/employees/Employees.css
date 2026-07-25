@@ -1,0 +1,135 @@
+.employee-page{
+    width:100%;
+}
+
+.employee-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.employee-header h1{
+    margin:0;
+    color:#13294B;
+}
+
+.top-actions{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.search-box{
+    width:280px;
+    padding:12px 15px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+}
+
+.add-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:12px 22px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+}
+
+.add-btn:hover{
+    background:#1d4ed8;
+}
+
+.employee-table{
+    width:100%;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.employee-table table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.employee-table th{
+    background:#eef4ff;
+    padding:16px;
+    text-align:left;
+}
+
+.employee-table td{
+    padding:16px;
+    border-bottom:1px solid #ececec;
+}
+
+.delete-btn{
+    border:none;
+    background:#ef4444;
+    color:white;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#dc2626;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    width:420px;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+}
+
+.modal-content h2{
+    margin-top:0;
+}
+
+.modal-content input{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border:1px solid #d8d8d8;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+.modal-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+}
+
+.cancel-btn{
+    border:none;
+    background:#ddd;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.save-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}

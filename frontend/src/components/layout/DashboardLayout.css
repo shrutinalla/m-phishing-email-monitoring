@@ -1,14 +1,17 @@
 .layout{
     display:flex;
-    background:#f4f7fb;
     min-height:100vh;
+    background:#f5f7fb;
 }
 
 .main-section{
     margin-left:250px;
-    width:100%;
+    flex:1;
+    min-width:0;
 }
 
 .content{
     padding:30px;
+    width:100%;
+    box-sizing:border-box;
 }

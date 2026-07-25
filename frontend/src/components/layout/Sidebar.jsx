@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaUsers,
@@ -8,6 +8,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
+import { useAuth } from "../../context/AuthContext";
 import routes from "../../utils/routes";
 
 import "./Sidebar.css";
@@ -41,6 +42,15 @@ const menuItems = [
 ];
 
 function Sidebar() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem("username");
+    navigate("/");
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -66,7 +76,7 @@ function Sidebar() {
         ))}
       </nav>
 
-      <div className="logout">
+      <div className="logout" onClick={handleLogout}>
         <FaSignOutAlt />
         <span>Logout</span>
       </div>

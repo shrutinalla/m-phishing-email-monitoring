@@ -45,3 +45,22 @@
     font-size:13px;
     color:gray;
 }
+
+.logout-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#1d4ed8;
+}
