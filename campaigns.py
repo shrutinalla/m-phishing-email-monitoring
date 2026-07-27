@@ -28,8 +28,7 @@ router = APIRouter()
 @router.post("/campaigns")
 def create_campaign(
     campaign: CampaignCreate,
-    db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
+    db: Session = Depends(get_db)
 ):
 
     existing_campaign = db.query(Campaign).filter(
@@ -63,12 +62,12 @@ def create_campaign(
     db.refresh(new_campaign)
         # Audit Log - Campaign Created
     log = AuditLog(
-        action="Campaign Created",
-        performed_by=admin,
-        module="Campaign",
-        details=f"Campaign '{new_campaign.campaign_name}' created",
-        timestamp=datetime.utcnow()
-    )
+    action="Campaign Created",
+    performed_by=admin,
+    module="Campaign",
+    details=f"Campaign '{new_campaign.campaign_name}' created",
+    timestamp=datetime.utcnow()
+)
 
     db.add(log)
     db.commit()

@@ -35,7 +35,6 @@ class EmployeeUpdate(BaseModel):
 def create_employee(
     employee: EmployeeCreate,
     db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
 ):
 
     emp = Employee(
@@ -50,16 +49,16 @@ def create_employee(
 
 
     # Audit Log
-    log = AuditLog(
-        action="Employee Added",
-        performed_by=admin,
-        module="Employee",
-        details=f"Employee '{emp.name}' added",
-        timestamp=datetime.utcnow()
-    )
+    # log = AuditLog(
+    #     action="Employee Added",
+    #     performed_by=admin,
+    #     module="Employee",
+    #     details=f"Employee '{emp.name}' added",
+    #     timestamp=datetime.utcnow()
+    # )
 
-    db.add(log)
-    db.commit()
+    # db.add(log)
+    # db.commit()
 
 
     return {
@@ -288,7 +287,6 @@ def update_employee(
     employee_id: int,
     employee: EmployeeUpdate,
     db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
 ):
 
     emp = db.query(Employee).filter(
@@ -314,17 +312,17 @@ def update_employee(
 
 
     # Audit Log
-    log = AuditLog(
-        action="Employee Updated",
-        performed_by=admin,
-        module="Employee",
-        details=f"Employee '{emp.name}' updated",
-        timestamp=datetime.utcnow()
-    )
+    # log = AuditLog(
+    #     action="Employee Updated",
+    #     performed_by=admin,
+    #     module="Employee",
+    #     details=f"Employee '{emp.name}' updated",
+    #     timestamp=datetime.utcnow()
+    # )
 
 
-    db.add(log)
-    db.commit()
+    # db.add(log)
+    # db.commit()
 
 
 
@@ -375,7 +373,6 @@ def search_employee(
 def delete_employee(
     employee_id: int,
     db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
 ):
 
     employee = db.query(Employee).filter(
@@ -399,17 +396,17 @@ def delete_employee(
 
 
     # Audit Log
-    log = AuditLog(
-        action="Employee Deleted",
-        performed_by=admin,
-        module="Employee",
-        details=f"Employee '{employee_name}' deleted",
-        timestamp=datetime.utcnow()
-    )
+    # log = AuditLog(
+    #     action="Employee Deleted",
+    #     performed_by=admin,
+    #     module="Employee",
+    #     details=f"Employee '{employee_name}' deleted",
+    #     timestamp=datetime.utcnow()
+    # )
 
 
-    db.add(log)
-    db.commit()
+    # db.add(log)
+    # db.commit()
 
 
 

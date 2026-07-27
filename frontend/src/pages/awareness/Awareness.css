@@ -1,0 +1,442 @@
+/* ===========================
+   AWARENESS PAGE
+=========================== */
+
+.awareness-page{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    padding:30px;
+    background:#f5f7fb;
+    min-height:100vh;
+    box-sizing:border-box;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.awareness-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.awareness-header h1{
+    margin:0;
+    font-size:30px;
+    color:#1f2937;
+}
+
+.awareness-header p{
+    margin-top:8px;
+    color:#6b7280;
+    font-size:15px;
+    max-width:700px;
+}
+
+/* ===========================
+   ASSIGN BUTTON
+=========================== */
+
+.assign-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:12px 22px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.assign-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   KPI GRID
+=========================== */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+}
+
+.stat-card{
+    background:white;
+    border-radius:14px;
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    transition:.25s;
+}
+
+.stat-card:hover{
+    transform:translateY(-4px);
+}
+
+.stat-icon{
+    width:60px;
+    height:60px;
+    border-radius:12px;
+    background:#e8f0fe;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+}
+
+.stat-card h2{
+    margin:0;
+    color:#111827;
+    font-size:30px;
+}
+
+.stat-card p{
+    margin-top:6px;
+    color:#6b7280;
+}
+
+/* ===========================
+   MODULES CARD
+=========================== */
+
+.modules-card{
+    background:white;
+    border-radius:14px;
+    padding:24px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.card-header h3{
+    margin:0;
+    color:#1f2937;
+    font-size:21px;
+}
+
+.view-all-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.view-all-btn:hover{
+    background:#1d4ed8;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+.modules-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.modules-table thead{
+    background:#2563eb;
+}
+
+.modules-table th{
+    color:white;
+    text-align:left;
+    padding:16px;
+    font-weight:600;
+}
+
+.modules-table td{
+    padding:16px;
+    border-bottom:1px solid #e5e7eb;
+    color:#374151;
+}
+
+.modules-table tbody tr:hover{
+    background:#f8fafc;
+}
+
+/* ===========================
+   STATUS
+=========================== */
+
+.status{
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.status.completed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.status.in-progress{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.status.pending{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+/* ===========================
+   TIPS CARD
+=========================== */
+
+.tips-card,
+.quiz-card,
+.notification-card,
+.resources-card{
+    background:white;
+    border-radius:14px;
+    padding:24px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.tips-card h3,
+.quiz-card h3,
+.notification-card h3,
+.resources-card h3{
+    margin:0 0 20px;
+    color:#1f2937;
+    font-size:21px;
+}
+
+.tips-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.tip-item{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:16px;
+    border-radius:10px;
+    background:#f8fafc;
+    transition:.25s;
+}
+
+.tip-item:hover{
+    background:#eef4ff;
+}
+
+.tip-item span{
+    font-size:22px;
+}
+
+/* ===========================
+   QUIZ
+=========================== */
+
+.quiz-content h4{
+    margin-bottom:20px;
+    color:#1f2937;
+}
+
+.quiz-options{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.quiz-options label{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.quiz-options label:hover{
+    border-color:#2563eb;
+    background:#f8fbff;
+}
+
+.start-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.start-btn:hover{
+    background:#1d4ed8;
+}
+
+/* ===========================
+   NOTIFICATIONS
+=========================== */
+
+.notification-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.notification-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.notification-item:last-child{
+    border-bottom:none;
+}
+
+.dot{
+    width:12px;
+    height:12px;
+    background:#2563eb;
+    border-radius:50%;
+    flex-shrink:0;
+}
+
+.notification-item p{
+    margin:0;
+    color:#374151;
+}
+
+/* ===========================
+   RESOURCES
+=========================== */
+
+.resource-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+}
+
+.resource-btn{
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.resource-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .awareness-page{
+        padding:20px;
+    }
+
+    .awareness-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .card-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .awareness-page{
+        padding:15px;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .modules-table{
+        display:block;
+        overflow-x:auto;
+    }
+
+    .resource-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .awareness-header h1{
+        font-size:24px;
+    }
+
+    .assign-btn{
+        width:100%;
+    }
+
+    .stat-card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+.stat-card,
+.modules-card,
+.tips-card,
+.quiz-card,
+.notification-card,
+.resources-card{
+    transition:all .25s ease;
+}
+
+.stat-card:hover,
+.modules-card:hover,
+.tips-card:hover,
+.quiz-card:hover,
+.notification-card:hover,
+.resources-card:hover{
+    transform:translateY(-2px);
+}
+
+button:active{
+    transform:scale(.98);
+}

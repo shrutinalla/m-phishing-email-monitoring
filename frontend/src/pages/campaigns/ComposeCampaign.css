@@ -1,0 +1,517 @@
+.compose-page{
+    max-width:1500px;
+    margin:0 auto;
+    padding:10px;
+}
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.page-header h1{
+    font-size:34px;
+    color:#0f172a;
+    margin-bottom:6px;
+}
+
+.page-header p{
+    color:#64748b;
+    font-size:15px;
+}
+
+.compose-layout{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:24px;
+    align-items:start;
+}
+
+.compose-left,
+.compose-right{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+.card{
+    background:#fff;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    border:1px solid #e5e7eb;
+}
+
+.card h3{
+    color:#1e3a8a;
+    margin-bottom:18px;
+    font-size:21px;
+}
+
+/* Sender */
+
+.sender-card{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.sender-avatar{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:#dbeafe;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+}
+
+.sender-info h4{
+    margin:0;
+    color:#0f172a;
+}
+
+.sender-info p{
+    margin:6px 0;
+    color:#64748b;
+}
+
+.sender-badge{
+    display:inline-block;
+    background:#dcfce7;
+    color:#15803d;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* Inputs */
+
+.grid-two{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    font-weight:600;
+    color:#334155;
+    margin-bottom:8px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+    box-sizing:border-box;
+    transition:.25s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+textarea{
+    resize:vertical;
+    min-height:220px;
+}
+/* ===========================
+   Employees
+=========================== */
+
+.employee-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:20px;
+}
+
+.employee-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.employee-item:hover{
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.employee-item input{
+    width:auto;
+}
+
+.employee-item span{
+    font-weight:500;
+}
+
+.selected-count{
+    margin-top:15px;
+    color:#2563eb;
+    font-weight:600;
+}
+
+/* ===========================
+   Difficulty Cards
+=========================== */
+
+.section-label{
+    display:block;
+    margin:22px 0 12px;
+}
+
+.difficulty-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:24px;
+}
+
+.difficulty-card{
+    background:#f8fafc;
+    border:2px solid transparent;
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.difficulty-card:hover{
+    transform:translateY(-3px);
+    border-color:#2563eb;
+}
+
+.difficulty-card.active{
+    background:#dbeafe;
+    border-color:#2563eb;
+}
+
+.difficulty-card h4{
+    margin:0;
+    color:#1e3a8a;
+}
+
+/* ===========================
+   Templates
+=========================== */
+
+.template-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.template-card{
+    padding:18px;
+    text-align:center;
+    background:#f8fafc;
+    border:2px solid transparent;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.template-card:hover{
+    border-color:#2563eb;
+    transform:translateY(-3px);
+}
+
+.template-card.active{
+    background:#dbeafe;
+    border-color:#2563eb;
+}
+
+/* ===========================
+   Character Counter
+=========================== */
+
+.character-counter{
+    text-align:right;
+    margin-top:10px;
+    color:#64748b;
+    font-size:14px;
+}
+
+/* ===========================
+   Tracking
+=========================== */
+
+.tracking-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.tracking-card{
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+    padding:18px;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    background:#f8fafc;
+}
+
+.tracking-card input{
+    width:auto;
+    margin-top:5px;
+}
+
+.tracking-card h4{
+    margin:0;
+    color:#1e293b;
+}
+
+.tracking-card p{
+    margin-top:6px;
+    color:#64748b;
+    font-size:14px;
+}
+
+/* ===========================
+   Upload
+=========================== */
+
+.upload-box{
+    border:2px dashed #94a3b8;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    background:#f8fafc;
+}
+
+.upload-box input{
+    margin-bottom:15px;
+}
+
+.attachment-info{
+    margin-top:18px;
+}
+
+.attachment-info strong{
+    display:block;
+    margin-bottom:8px;
+}
+/* ===========================
+   Schedule
+=========================== */
+
+.schedule-options{
+    display:flex;
+    gap:30px;
+    margin-bottom:20px;
+}
+
+.schedule-options label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+}
+
+.schedule-options input{
+    width:auto;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.button-group{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+}
+
+.primary-btn,
+.secondary-btn{
+    padding:12px 24px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.primary-btn{
+    background:#2563eb;
+    color:#fff;
+}
+
+.primary-btn:hover{
+    background:#1d4ed8;
+}
+
+.secondary-btn{
+    background:#e2e8f0;
+}
+
+.secondary-btn:hover{
+    background:#cbd5e1;
+}
+
+/* ===========================
+   Right Panel
+=========================== */
+
+.email-preview{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:18px;
+}
+
+.preview-body{
+    margin-top:15px;
+    line-height:1.6;
+}
+
+.placeholder-text{
+    color:#94a3b8;
+    font-style:italic;
+}
+
+.analysis-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+    padding-bottom:12px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.analysis-item:last-child{
+    border-bottom:none;
+    margin-bottom:0;
+}
+
+/* ===========================
+   Risk Score
+=========================== */
+
+.risk-bar{
+    width:100%;
+    height:12px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+    margin:18px 0;
+}
+
+.risk-fill{
+    height:100%;
+    background:linear-gradient(90deg,#22c55e,#eab308,#ef4444);
+    border-radius:20px;
+}
+
+.compose-right h2{
+    text-align:center;
+    color:#2563eb;
+    font-size:34px;
+    margin:0;
+}
+
+/* ===========================
+   Keywords
+=========================== */
+
+.keyword-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.keyword-chip{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width:1100px){
+
+.compose-layout{
+    grid-template-columns:1fr;
+}
+
+.compose-right{
+    order:-1;
+}
+
+.template-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.difficulty-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.employee-list{
+    grid-template-columns:1fr;
+}
+
+.tracking-grid{
+    grid-template-columns:1fr;
+}
+
+}
+
+@media (max-width:768px){
+
+.page-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.grid-two{
+    grid-template-columns:1fr;
+}
+
+.template-grid{
+    grid-template-columns:1fr;
+}
+
+.difficulty-grid{
+    grid-template-columns:1fr;
+}
+
+.button-group{
+    flex-direction:column;
+}
+
+.schedule-options{
+    flex-direction:column;
+    gap:15px;
+}
+
+}

@@ -195,8 +195,7 @@ router = APIRouter()
 @router.post("/templates")
 def create_template(
     template: TemplateCreate,
-    db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
+    db: Session = Depends(get_db)
 ):
     existing = db.query(EmailTemplate).filter(
         EmailTemplate.template_name == template.template_name
@@ -223,7 +222,7 @@ def create_template(
 
     log = AuditLog(
     action="Template Created",
-    performed_by=admin,
+    performed_by="Developer",
     module="Template",
     details=f"Template '{new_template.template_name}' created",
     timestamp=datetime.utcnow()
@@ -380,8 +379,7 @@ def update_template(
 @router.delete("/templates/{template_id}")
 def delete_template(
     template_id: int,
-    db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
+    db: Session = Depends(get_db)
 ):
 
     template = db.query(EmailTemplate).filter(
