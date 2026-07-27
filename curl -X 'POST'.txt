@@ -1,0 +1,570 @@
+curl -X 'POST' \
+  'http://127.0.0.1:8000/templates' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "template_name": "Account Verification",
+  "subject": "Action Required: Verify Your MIDHANI Account",
+  "content": "<html><body style=\"font-family:Arial,sans-serif;\"><h2>MIDHANI IT Department</h2><p>Dear {employee_name},</p><p>Our systems have detected unusual activity on your employee account. For security reasons, please verify your account immediately.</p><p><a href=\"{tracking_link}\" style=\"background:#0d6efd;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;\">Verify Account</a></p><p>Failure to verify your account within 24 hours may result in temporary account suspension.</p><br><p>Regards,<br><strong>{company_name} IT Security Team</strong></p></body></html>"
+}'
+Request URL
+http://127.0.0.1:8000/templates
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "message": "Template created successfully",
+  "template_id": 1
+}
+Response headers
+ access-control-allow-credentials: true 
+ content-length: 59 
+ content-type: application/json 
+ date: Mon,27 Jul 2026 05:59:34 GMT 
+ server: uvicorn 
+----
+BRO YES. 😭 I was actually going to bring this up after we got the templates working.
+
+**Displaying raw HTML in the frontend is not a good user experience.**
+
+Instead of seeing:
+
+```html
+<html>
+<body>
+<h2>...</h2>
+...
+```
+
+the admin should see the **rendered email**, just like Outlook or Gmail.
+
+## The better approach
+
+### Backend (Database)
+
+Store the HTML exactly like we're doing now.
+
+Example:
+
+```html
+<html>
+<body>
+...
+</body>
+</html>
+```
+
+This is correct because that's the actual email content that gets sent.
+
+---
+
+### Frontend
+
+**Don't display it inside a `<textarea>`.**
+
+Instead, render it.
+
+For example, in React:
+
+```jsx
+<div
+  className="email-preview"
+  dangerouslySetInnerHTML={{ __html: body }}
+/>
+```
+
+This will show:
+
+* ✅ Buttons
+* ✅ Headings
+* ✅ Colors
+* ✅ Layout
+
+instead of HTML code.
+
+---
+
+## Even better (what professional tools do)
+
+In your Compose Campaign page:
+
+```
+---------------------------------------
+| Subject                          |
+---------------------------------------
+
+---------------------------------------
+| HTML Editor (optional)           |
+---------------------------------------
+
+---------------------------------------
+| Live Email Preview               |
+|                                 |
+|  ┌───────────────────────────┐   |
+|  | MIDHANI IT Department     |   |
+|  |                           |   |
+|  | Dear John,                |   |
+|  |                           |   |
+|  | Verify your account...    |   |
+|  |                           |   |
+|  | [Verify Account]          |   |
+|  └───────────────────────────┘   |
+---------------------------------------
+```
+
+The admin edits if needed, but mostly **previews** what employees will receive.
+
+---
+
+## For your internship
+
+I'd actually recommend this workflow:
+
+* **Template Library**
+
+  * Shows template names.
+* **Preview Panel**
+
+  * Renders the HTML beautifully.
+* **Edit Button**
+
+  * Opens the HTML source only if someone wants to modify it.
+
+That's much closer to how real phishing simulation platforms work.
+
+---
+
+### My recommendation
+
+**Don't change it right now.**
+
+Let's first:
+
+1. Finish all 7 templates.
+2. Get campaign creation and email sending working end-to-end.
+
+Then we'll spend 20–30 minutes improving the frontend so the email preview renders the HTML instead of showing raw code. That will make your demo look much more polished without changing how the backend stores templates.
+-------
+I actually **wouldn't store this as an email template.**
+
+This is the **landing page** the employee sees **after clicking** the phishing link, not an email.
+
+Current flow:
+
+```
+Email Template
+      │
+      ▼
+Employee clicks {tracking_link}
+      │
+      ▼
+/track/{employee_id}/{campaign_id}
+      │
+      ▼
+Log click in database
+      │
+      ▼
+Show Awareness Page   ← This file
+```
+
+So this HTML belongs in your FastAPI `tracking.py` (or a Jinja template like `awareness.html`), **not** in the `templates` database.
+
+---
+
+## I'd improve it though
+
+Instead of this plain page:
+
+```
+⚠ Cyber Security Awareness Training
+
+You clicked a simulated phishing email.
+```
+
+Make it look like an actual awareness portal.
+
+Example:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Awareness</title>
+</head>
+
+<body style="font-family:Arial,sans-serif;background:#f5f5f5;">
+
+<div style="max-width:700px;margin:50px auto;background:white;padding:30px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);">
+
+<h1 style="color:#d9534f;">⚠ Phishing Simulation Completed</h1>
+
+<p>Hello <strong>{employee_name}</strong>,</p>
+
+<p>
+You have clicked on a simulated phishing email as part of
+<strong>{company_name}</strong>'s Security Awareness Program.
+No action is required—this was only a training exercise.
+</p>
+
+<hr>
+
+<h3>How could you identify this email?</h3>
+
+<ul>
+<li>Always verify the sender's email address.</li>
+<li>Hover over links before clicking them.</li>
+<li>Be cautious of urgent requests or threats.</li>
+<li>Never enter your credentials on unverified websites.</li>
+<li>Report suspicious emails to the IT Security Team.</li>
+</ul>
+
+<hr>
+
+<p>
+This exercise helps improve organizational cyber security awareness and reduce phishing risks.
+</p>
+
+<p>
+<strong>Thank you for participating.</strong>
+</p>
+
+</div>
+
+</body>
+</html>
+```
+
+---
+
+### My suggestion
+
+Let's keep these **separate**:
+
+📁 **Email Templates (stored in DB)**
+
+* Account Verification
+* Password Reset
+* Microsoft 365 Login
+* VPN Renewal
+* Salary Slip
+* HR Policy Update
+
+📁 **Awareness Pages (templates folder)**
+
+* `awareness.html`
+* `success.html` (optional)
+* `error.html` (optional)
+* `expired.html` (optional)
+
+This separation is cleaner architecturally and matches how real phishing simulation platforms are designed.
+----------------
+Perfect. Now we stop adding features and start **making the project production-ready**.
+
+---
+
+# Phase 2.1 — Clean the Database
+
+Before importing the new templates, let's remove all the old test data.
+
+## Step 1 — Delete campaigns
+
+In PostgreSQL:
+
+```sql
+DELETE FROM campaigns;
+```
+
+---
+
+## Step 2 — Delete templates
+
+```sql
+DELETE FROM templates;
+```
+
+---
+
+## Step 3 — Reset IDs (recommended)
+
+This makes IDs start from 1 again.
+
+```sql
+ALTER SEQUENCE campaigns_id_seq RESTART WITH 1;
+ALTER SEQUENCE templates_id_seq RESTART WITH 1;
+```
+
+If your sequence names differ, we'll check them.
+
+---
+
+## Step 4 — Verify
+
+```sql
+SELECT * FROM campaigns;
+SELECT * FROM templates;
+```
+
+Both should return **0 rows**.
+
+Employees should still remain.
+
+---
+
+# Then we'll import
+
+We'll insert
+
+```
+1. Account Verification
+
+2. HR Policy Update
+
+3. Microsoft 365 Login
+
+4. Password Reset
+
+5. VPN Access Renewal
+
+6. Salary Slip
+```
+
+---
+
+# After that (very important)
+
+We'll improve your backend.
+
+Instead of
+
+```python
+tracking_link = f"http://127.0.0.1:8000/track/{emp.id}/{campaign.id}"
+```
+
+we'll use
+
+```python
+BASE_URL = os.getenv("BASE_URL")
+
+tracking_link = (
+    f"{BASE_URL}/track/{emp.id}/{campaign.id}"
+)
+```
+
+because once you deploy
+
+```
+localhost ❌
+
+127.0.0.1 ❌
+
+Actual server URL ✅
+```
+
+and every email automatically works.
+
+---
+
+# Then frontend
+
+This is where your project will suddenly look professional.
+
+Current
+
+```
+Template
+
+<html>
+<body>
+...
+```
+
+↓
+
+We'll change it to
+
+```
+Template Preview
+
+┌──────────────────────────────┐
+│ Microsoft Security Alert     │
+│                              │
+│ Dear Shruti,                 │
+│                              │
+│ We detected...               │
+│                              │
+│ [ Review Login Activity ]    │
+└──────────────────────────────┘
+```
+
+This alone will make the demo much more impressive.
+
+---
+
+# After frontend
+
+We'll work on
+
+* Dashboard polish
+* Reports
+* Charts
+* Click analytics
+* Department ranking
+* Campaign statistics
+
+---
+
+## 🎯 Your task right now
+
+Tell me **how you're managing your database**:
+
+1. **pgAdmin** (GUI)
+2. **psql terminal**
+3. **SQLAlchemy only (no direct SQL client)**
+
+Once I know that, I'll guide you through cleaning the database safely, and then we'll import the six templates. After that, we'll move on to the frontend preview.
+-----------
+😂😂 You're absolutely right. That's on me.
+
+I looked at it like a **developer**. You're building it like an **admin tool**.
+
+Looking at your screenshot, I immediately see the problem. The HTML editor should **not** be the primary thing the admin sees. The admin isn't expected to write HTML. They're expected to:
+
+* Select a template
+* Change the subject (if needed)
+* Preview it
+* Send it
+
+The HTML should be hidden away for advanced editing.
+
+---
+
+## What's wrong in the current UI?
+
+1. **Huge HTML box** ❌
+
+   * An admin shouldn't have to see raw HTML.
+
+2. **The preview is too narrow** ❌
+
+   * It's squeezed into a tiny column, making the email hard to read.
+
+3. **The "Verify Account" button is blue because it's inside the email template.** ✅
+
+   * That's actually **correct**. It's the phishing email's call-to-action button, not your application's button.
+   * We should make the preview larger so it looks like a real email instead of a cramped mobile view.
+
+---
+
+# Here's how I'd redesign it
+
+## Left side (Controls)
+
+```
+Recipients
+
+Campaign Details
+
+Subject
+
+Difficulty
+
+Template
+
+Tracking
+
+Schedule
+
+Send Campaign
+```
+
+No HTML.
+
+---
+
+## Right side (Large Preview)
+
+```
+📧 Email Preview
+
+-----------------------------------------
+
+(rendered email)
+
+-----------------------------------------
+
+✏️ Edit HTML
+```
+
+---
+
+When the admin clicks **Edit HTML**:
+
+```
+📧 Email Preview
+
+(rendered email)
+
+-----------------------------------------
+
+▼ HTML Source
+
+<textarea>
+
+...html...
+
+</textarea>
+
+```
+
+The HTML stays hidden unless it's actually needed.
+
+---
+
+## The preview should be much bigger
+
+Right now it's around 250px wide. I'd increase it to around 500–600px so it resembles a real email window.
+
+---
+
+## The "Verify Account" button
+
+This is **inside the email**. Don't remove it. In the actual phishing simulation, recipients need something to click.
+
+Instead, change the link in the preview so it doesn't navigate anywhere:
+
+```html
+href="#"
+```
+
+or
+
+```html
+pointer-events: none;
+cursor: default;
+```
+
+That way it still looks real but won't accidentally trigger anything while previewing.
+
+---
+
+## My recommendation
+
+I actually want to make this page feel like **GoPhish** or **Microsoft Defender for Office 365**, not like an HTML editor.
+
+So I'd do this:
+
+1. ✅ Hide the HTML editor by default.
+2. ✅ Make the preview much wider.
+3. ✅ Keep only one preview.
+4. ✅ Add an **Edit HTML** toggle below the preview.
+5. ✅ Disable interaction with links/buttons inside the preview.
+6. ✅ Leave the **Verify Account** button visible because it's part of the simulated email.
+
+---
+
+### I think we should spend another hour making this page look premium.
+
+It's the main page your mentors will use during the demo. If this page looks polished, it immediately raises the perceived quality of the whole project. After that, the remaining pages (Dashboard, Reports, Employees) will be much quicker to polish.
+
