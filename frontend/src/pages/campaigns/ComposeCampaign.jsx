@@ -74,25 +74,36 @@ const handleTemplateSelect = async (templateId) => {
     setBody(data.content);
 
   } catch (error) {
-    console.error(error);
+    console.error("Failed to load template:", error);
   }
 };
+
 const handleSendCampaign = async () => {
   try {
+
+    console.log("Selected Template:", selectedTemplate);
+
     const campaignData = {
-  campaign_name: template,
-  email_subject: subject,
-  email_template: body,
-  difficulty: difficulty,
-  status: "Draft",
-  template_id: selectedTemplate,
-};
+      campaign_name: template,
+      email_subject: subject,
+      email_template: body,
+      difficulty: difficulty,
+      status: "Draft",
+      template_id: selectedTemplate,
+    };
 
-    const campaign = await createCampaign(campaignData);
+    console.log("Campaign Data:", campaignData);
 
-    await sendCampaign(campaign.campaign_id);
+   const campaign = await createCampaign(campaignData);
 
-    alert("Campaign sent successfully!");
+console.log("Campaign Response:", campaign);
+console.log("Campaign ID:", campaign.campaign_id);
+
+const result = await sendCampaign(campaign.campaign_id);
+
+console.log("Send Campaign Response:", result);
+
+alert("Campaign sent successfully!");
 
   } catch (error) {
     console.error(error);
@@ -128,6 +139,16 @@ const departments = [
   "All Departments",
   ...new Set(filteredEmployees.map((employee) => employee.department))
 ];
+const previewBody = body
+  .replaceAll("{employee_name}", "Shruti Nalla")
+  .replaceAll("{employee_email}", "shruti@midhani.com")
+  .replaceAll("{company_name}", "MIDHANI")
+  .replaceAll("{campaign_name}", "Security Awareness Campaign")
+  .replaceAll("{tracking_link}", "#")
+  .replaceAll(
+    "{current_date}",
+    new Date().toLocaleDateString()
+  );
   return (
     <DashboardLayout>
       <div className="compose-page">
@@ -141,9 +162,7 @@ const departments = [
             </p>
           </div>
 
-          <button className="primary-btn">
-            Preview Campaign
-          </button>
+    
         </div>
 
         <div className="compose-layout">
@@ -308,16 +327,16 @@ const departments = [
 
   <label>Email Body</label>
 
-  <textarea
-    rows="12"
-    value={body}
-    placeholder="Compose phishing email..."
-    onChange={(e) => setBody(e.target.value)}
-  />
+<textarea
+  rows="18"
+  value={body}
+  placeholder="Compose phishing email..."
+  onChange={(e) => setBody(e.target.value)}
+/>
 
-  <div className="character-counter">
-    {body.length} Characters
-  </div>
+<div className="character-counter">
+  {body.length} Characters
+</div>
 
 </div>
 {/* ===================== TRACKING ===================== */}
@@ -499,7 +518,12 @@ const departments = [
 
 <div className="card">
 
-  <h3>Live Email Preview</h3>
+<div className="preview-header">
+    <h3>📧 Live Email Preview</h3>
+    <span className="preview-status">
+        Real-time
+    </span>
+</div>
 
   <div className="email-preview">
 
@@ -509,17 +533,24 @@ const departments = [
 
     <hr />
 
-    <div className="preview-body">
+   <div className="preview-body">
 
-      {body ? (
-        <p style={{ whiteSpace: "pre-wrap" }}>{body}</p>
-      ) : (
-        <p className="placeholder-text">
-          Email preview will appear here...
-        </p>
-      )}
+  {body ? (
 
-    </div>
+    <div
+      className="email-preview-content"
+      dangerouslySetInnerHTML={{ __html: previewBody }}
+    />
+
+  ) : (
+
+    <p className="placeholder-text">
+      Email preview will appear here...
+    </p>
+
+  )}
+
+</div>
 
   </div>
 

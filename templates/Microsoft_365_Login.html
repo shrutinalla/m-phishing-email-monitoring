@@ -1,26 +1,38 @@
-body = f"""
 <html>
-<body style="font-family:Arial,sans-serif;">
+<body style="font-family:Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px;">
 
-<h2>Microsoft 365 Security Alert</h2>
+<div style="max-width:650px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;border:1px solid #ddd;">
 
-<p>Dear {emp.name},</p>
+<h2 style="color:#0078D4;">Microsoft 365 Security Alert</h2>
+
+<p>Dear {employee_name},</p>
 
 <p>
-A login attempt from a new device has been detected.
-If this was not you, please verify your account immediately.
+We detected a sign-in attempt to your Microsoft 365 account from a new device or location.
+If this activity was initiated by you, no further action is required.
 </p>
 
 <p>
-<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
-Review Login Activity
+If you do not recognize this sign-in attempt, please review your recent account activity immediately to help protect your account.
+</p>
+
+<p style="margin:30px 0;">
+<a href="{tracking_link}"
+style="background:#0078D4;color:#ffffff;padding:12px 22px;text-decoration:none;border-radius:5px;font-weight:bold;">
+Review Sign-in Activity
 </a>
+</p>
+
+<p style="font-size:14px;color:#555;">
+If you believe your account has been compromised, please contact your IT Help Desk immediately.
 </p>
 
 <br>
 
-Microsoft Security Team
+Regards,<br>
+<strong>Microsoft 365 Security Team</strong>
+
+</div>
 
 </body>
 </html>
-"""

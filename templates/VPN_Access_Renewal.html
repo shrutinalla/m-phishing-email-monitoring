@@ -1,27 +1,39 @@
-body = f"""
 <html>
-<body style="font-family:Arial,sans-serif;">
+<body style="font-family:Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px;">
 
-<h2>VPN Access Renewal</h2>
+<div style="max-width:650px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;border:1px solid #ddd;">
 
-<p>Hello {emp.name},</p>
+<h2 style="color:#198754;">VPN Access Renewal</h2>
+
+<p>Dear {employee_name},</p>
 
 <p>
-Your VPN access is due for renewal.
-Please confirm your credentials to avoid service interruption.
+Our records indicate that your Virtual Private Network (VPN) access is due for renewal.
+To ensure uninterrupted access to the corporate network while working remotely, please complete the renewal process.
 </p>
 
-<p>
-<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
+<p style="margin:30px 0;">
+<a href="{tracking_link}"
+style="background:#198754;color:#ffffff;padding:12px 22px;text-decoration:none;border-radius:5px;font-weight:bold;">
 Renew VPN Access
 </a>
 </p>
 
+<p>
+Failure to renew your VPN access before the scheduled expiration may temporarily prevent you from accessing internal company resources.
+</p>
+
+<p style="font-size:14px;color:#555;">
+If your VPN access has already been renewed, no further action is required.
+</p>
+
 <br>
 
-Network Administration<br>
-MIDHANI
+Regards,<br>
+<strong>Network Administration</strong><br>
+{company_name}
+
+</div>
 
 </body>
 </html>
-"""

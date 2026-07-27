@@ -515,3 +515,79 @@ textarea{
 }
 
 }
+.email-editor-container{
+    display:flex;
+    gap:25px;
+    margin-top:20px;
+    align-items:flex-start;
+}
+
+.email-editor{
+    flex:1;
+}
+
+.email-preview{
+    flex:1;
+    background:#f8f9fa;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    padding:20px;
+    min-height:520px;
+    overflow:auto;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.email-preview-content{
+    background:white;
+    padding:25px;
+    border-radius:8px;
+    min-height:460px;
+}
+
+.email-editor textarea{
+    width:100%;
+    min-height:520px;
+    resize:vertical;
+    padding:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+    font-family:Consolas, monospace;
+}
+
+.character-counter{
+    text-align:right;
+    margin-top:8px;
+    color:#777;
+}
+.preview-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.preview-status{
+    background:#d1fae5;
+    color:#047857;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.preview-body{
+    background:#f5f7fa;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:15px;
+    min-height:450px;
+    overflow:auto;
+}
+
+.email-preview-content{
+    background:white;
+    border-radius:8px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}

@@ -231,9 +231,13 @@ def create_template(
     db.commit()
 
     return {
-        "message": "Template created successfully",
-        "template_id": new_template.id
+    "message": "Template created successfully",
+    "template": {
+        "id": new_template.id,
+        "template_name": new_template.template_name,
+        "subject": new_template.subject
     }
+}
 
 
 # -----------------------------

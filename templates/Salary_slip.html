@@ -1,27 +1,42 @@
-body = f"""
 <html>
-<body style="font-family:Arial,sans-serif;">
+<body style="font-family:Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px;">
 
-<h2>Salary Slip Available</h2>
+<div style="max-width:650px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;border:1px solid #ddd;">
 
-<p>Dear {emp.name},</p>
+<h2 style="color:#6f42c1;">Salary Slip Available</h2>
+
+<p>Dear {employee_name},</p>
 
 <p>
-Your salary slip for this month is now available.
-Click below to download it.
+Your salary slip for the current payroll cycle has been generated and is now available for review.
 </p>
 
 <p>
-<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
-Download Salary Slip
+Please access the payroll portal using the button below to securely view and download your salary statement.
+</p>
+
+<p style="margin:30px 0;">
+<a href="{tracking_link}"
+style="background:#6f42c1;color:#ffffff;padding:12px 22px;text-decoration:none;border-radius:5px;font-weight:bold;">
+View Salary Slip
 </a>
+</p>
+
+<p>
+If you experience any issues accessing your salary slip or notice any discrepancies, please contact the Finance Department.
+</p>
+
+<p style="font-size:14px;color:#555;">
+This is an automated payroll notification. Please do not reply directly to this email.
 </p>
 
 <br>
 
-Finance Department<br>
-MIDHANI
+Regards,<br>
+<strong>Finance Department</strong><br>
+{company_name}
+
+</div>
 
 </body>
 </html>
-"""

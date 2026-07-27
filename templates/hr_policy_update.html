@@ -1,27 +1,38 @@
-body = f"""
 <html>
-<body style="font-family:Arial,sans-serif;">
+<body style="font-family:Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px;">
 
-<h2>HR Policy Update</h2>
+<div style="max-width:650px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;border:1px solid #ddd;">
 
-<p>Hello {emp.name},</p>
+<h2 style="color:#0d6efd;">HR Policy Update</h2>
+
+<p>Dear {employee_name},</p>
 
 <p>
-A revised HR policy has been published.
-Employees must acknowledge the document before the end of the week.
+The Human Resources department has published an updated Employee Policy Manual containing revisions to leave policies, workplace conduct, and compliance requirements.
 </p>
 
 <p>
-<a href="http://127.0.0.1:8000/track/{emp.id}/{campaign.id}">
-Read Updated Policy
+All employees are required to review and acknowledge the updated policy before the specified deadline to ensure continued compliance with organizational standards.
+</p>
+
+<p style="margin:30px 0;">
+<a href="{tracking_link}"
+style="background:#0d6efd;color:#ffffff;padding:12px 22px;text-decoration:none;border-radius:5px;font-weight:bold;">
+Review HR Policy
 </a>
+</p>
+
+<p>
+If you have already completed the acknowledgment, no further action is required.
 </p>
 
 <br>
 
-Human Resources<br>
-MIDHANI
+Regards,<br>
+<strong>Human Resources</strong><br>
+{company_name}
+
+</div>
 
 </body>
 </html>
-"""
