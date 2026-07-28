@@ -33,7 +33,7 @@ from dashboard import router as dashboard_router
 from notifications import router as notification_router
 from audit_logs import router as audit_router
 from fastapi.middleware.cors import CORSMiddleware
-
+import security_analysis
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -68,7 +68,7 @@ app.include_router(live_tracking_router)
 app.include_router(dashboard_router)
 app.include_router(notification_router)
 app.include_router(audit_router)
-
+app.include_router(security_analysis.router)
 
 @app.get("/")
 def home():

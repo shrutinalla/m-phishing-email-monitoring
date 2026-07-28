@@ -1,8 +1,8 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
 from database import get_db
 
 from models import Employee
@@ -29,19 +29,15 @@ async def send_campaign(
     print("\n" + "=" * 70)
     print("SEND CAMPAIGN REQUEST")
     print("=" * 70)
-    print("Campaign ID Received:", campaign_id)
+    print("Campaign ID:", campaign_id)
 
-    # --------------------------
+    # ---------------------------------
     # Get Campaign
-    # --------------------------
-
-    print("\nSearching campaign...")
+    # ---------------------------------
 
     campaign = db.query(Campaign).filter(
         Campaign.id == campaign_id
     ).first()
-
-    print("Campaign =", campaign)
 
     if campaign is None:
         raise HTTPException(
@@ -49,36 +45,38 @@ async def send_campaign(
             detail="Campaign not found"
         )
 
-    print("Campaign Name :", campaign.campaign_name)
-    print("Template ID   :", campaign.template_id)
+    print("Campaign:", campaign.campaign_name)
+    print("Template ID:", campaign.template_id)
 
-    # --------------------------
-    # Get Template
-    # --------------------------
+    # ---------------------------------
+    # Load Template (Optional)
+    # ---------------------------------
 
-    print("\nSearching template...")
+    template = None
 
-    template = db.query(EmailTemplate).filter(
-        EmailTemplate.id == campaign.template_id
-    ).first()
+    if campaign.template_id is not None:
 
-    print("Template =", template)
+        template = db.query(EmailTemplate).filter(
+            EmailTemplate.id == campaign.template_id
+        ).first()
 
-    if template is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Email template not found"
-        )
+        if template is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Email template not found"
+            )
 
-    print("Template Name :", template.template_name)
+        print("Using template:", template.template_name)
 
-    # --------------------------
-    # Get Employees
-    # --------------------------
+    else:
+
+        print("Using custom campaign content")
+
+    # ---------------------------------
+    # Employees
+    # ---------------------------------
 
     employees = db.query(Employee).all()
-
-    print("Employees Found =", len(employees))
 
     if not employees:
         raise HTTPException(
@@ -89,20 +87,21 @@ async def send_campaign(
     sent = 0
     failed = 0
 
-    # --------------------------
+    # ---------------------------------
     # Send Emails
-    # --------------------------
+    # ---------------------------------
 
     for emp in employees:
 
-        print("\n" + "=" * 60)
-        print("Employee :", emp.name)
-        print("Email    :", emp.email)
-        print("=" * 60)
+        if template:
 
-        subject = template.subject
+            subject = template.subject
+            body = template.content
 
-        body = template.content
+        else:
+
+            subject = campaign.email_subject
+            body = campaign.email_template
 
         body = body.replace(
             "{employee_name}",
@@ -135,16 +134,14 @@ async def send_campaign(
         )
 
         try:
-            await send_phishing_email(
-    recipient_email=emp.email,
-    subject=subject,
-    body=body,
-    attachment_path=campaign.attachment_path,
-    attachment_name=campaign.attachment_name
-)
-            
 
-            print("SUCCESS:", emp.email)
+            await send_phishing_email(
+                recipient_email=emp.email,
+                subject=subject,
+                body=body,
+                attachment_path=campaign.attachment_path,
+                attachment_name=campaign.attachment_name
+            )
 
             email_log = EmailLog(
                 employee_id=emp.id,
@@ -158,10 +155,9 @@ async def send_campaign(
 
             sent += 1
 
-        except Exception as e:
+            print("SUCCESS:", emp.email)
 
-            print("FAILED :", emp.email)
-            print("ERROR  :", e)
+        except Exception as e:
 
             email_log = EmailLog(
                 employee_id=emp.id,
@@ -176,42 +172,52 @@ async def send_campaign(
 
             failed += 1
 
-    # --------------------------
+            print("FAILED:", emp.email)
+            print(e)
+
+    # ---------------------------------
     # Update Campaign
-    # --------------------------
+    # ---------------------------------
 
     campaign.status = "Running"
-    campaign.start_date = datetime.now(ZoneInfo("Asia/Kolkata"))
+    campaign.start_date = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    campaign.total_recipients = len(employees)
     campaign.emails_sent = sent
     campaign.emails_failed = failed
-    campaign.total_recipients = len(employees)
 
     db.commit()
 
-    # --------------------------
+    # ---------------------------------
     # Audit Log
-    # --------------------------
+    # ---------------------------------
 
     audit = AuditLog(
         action="Campaign Sent",
         performed_by="Admin",
         module="Campaign",
         details=f"Campaign '{campaign.campaign_name}' sent to {sent} employees",
-        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
+        timestamp=datetime.now(
+            ZoneInfo("Asia/Kolkata")
+        )
     )
 
     db.add(audit)
     db.commit()
 
-    print("\nCampaign Execution Completed")
-    print("Emails Sent   :", sent)
-    print("Emails Failed :", failed)
+    print("\nCampaign completed")
 
     return {
         "message": "Campaign execution completed",
         "campaign_id": campaign.id,
         "campaign_name": campaign.campaign_name,
-        "template_used": template.template_name,
+        "template_used": (
+            template.template_name
+            if template
+            else "Custom Email"
+        ),
         "emails_sent": sent,
         "emails_failed": failed,
         "total_employees": len(employees),

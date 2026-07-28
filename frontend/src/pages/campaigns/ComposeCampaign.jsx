@@ -11,7 +11,8 @@ import {
 
 function ComposeCampaign() {
   const [difficulty, setDifficulty] = useState("Medium");
-  const [template, setTemplate] = useState("Password Reset");
+  // const [template, setTemplate] = useState("Password Reset");
+  const [template, setTemplate] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [department, setDepartment] = useState("All Departments");
@@ -19,12 +20,16 @@ function ComposeCampaign() {
   const [schedule, setSchedule] = useState("now");
   const [attachment, setAttachment] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 const [employees, setEmployees] = useState([]);
 const [templates, setTemplates] = useState([]);
 const [selectedEmployees, setSelectedEmployees] = useState([]);
-const [selectedTemplate, setSelectedTemplate] = useState(null);
-
-
+const [riskScore, setRiskScore] = useState(0);
+const [riskLevel, setRiskLevel] = useState("");
+const [threatType, setThreatType] = useState("");
+const [suspiciousWords, setSuspiciousWords] = useState([]);
+const [analysisReasons, setAnalysisReasons] = useState([]);
+const [trendAnalysis, setTrendAnalysis] = useState(null);
   const filteredEmployees = employees.filter((employee) =>
   employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
   employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,11 +55,51 @@ const handleEmployeeSelection = (employeeId) => {
 };
 useEffect(() => {
   loadEmployees();
+
 }, []);
+const analyzeCampaign = async () => {
+  try {
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/security/analyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subject,
+          body,
+          difficulty,
+          has_attachment: attachment !== null,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    setRiskScore(data.risk_score);
+    setRiskLevel(data.risk_level);
+    setThreatType(data.threat_type);
+    setSuspiciousWords(data.suspicious_words);
+    setAnalysisReasons(data.reasons);
+    setTrendAnalysis(data.trend_analysis);
+
+  } catch (err) {
+    console.error(err);
+  }
+};
   
 useEffect(() => {
     loadTemplates();
 }, []);
+useEffect(() => {
+
+  if (subject || body) {
+    analyzeCampaign();
+  }
+
+}, [subject, body, difficulty, attachment]);
 
 const loadTemplates = async () => {
     try {
@@ -63,6 +108,13 @@ const loadTemplates = async () => {
     } catch (error) {
         console.error("Failed to load templates:", error);
     }
+};
+
+const useCustomEmail = () => {
+  setSelectedTemplate(null);
+  setTemplate("Custom Email");
+  setSubject("");
+  setBody("");
 };
 
 const handleTemplateSelect = async (templateId) => {
@@ -81,19 +133,24 @@ const handleTemplateSelect = async (templateId) => {
 
 const handleSendCampaign = async () => {
   try {
-    if (!selectedTemplate) {
-      alert("Please select an email template.");
-      return;
-    }
+    if (!subject.trim() || !body.trim()) {
+  alert("Subject and Email Body are required.");
+  return;
+}
 
     const campaignData = {
-      campaign_name: template,
-      email_subject: subject,
-      email_template: body,
-      difficulty: difficulty,
-      status: "Draft",
-      template_id: selectedTemplate,
-    };
+  campaign_name: selectedTemplate
+    ? template
+    : subject,
+
+  email_subject: subject,
+  email_template: body,
+
+  difficulty,
+  status: "Draft",
+
+  template_id: selectedTemplate,
+};
 
     // Create campaign
     const campaign = await createCampaign(campaignData);
@@ -101,7 +158,7 @@ const handleSendCampaign = async () => {
     // Upload attachment (if selected)
     if (attachment) {
       await uploadCampaignAttachment(
-        campaign.campaign_id,
+        campaign.id,
         attachment
       );
     }
@@ -135,21 +192,6 @@ const loadEmployees = async () => {
   }
 }; 
 
-  const suspiciousWords = [
-    "Urgent",
-    "Verify",
-    "Password",
-    "Immediately",
-  ];
-
-  const riskScore =
-    difficulty === "Low"
-      ? 25
-      : difficulty === "Medium"
-      ? 55
-      : difficulty === "High"
-      ? 82
-      : 96;
 const departments = [
   "All Departments",
   ...new Set(filteredEmployees.map((employee) => employee.department))
@@ -185,8 +227,8 @@ const previewBody = body
           {/* LEFT COLUMN */}
 
           <div className="left-column">
+            
           {/* ===================== SENDER ===================== */}
-
 <div className="card">
 
   <h3>Sender Information</h3>
@@ -318,11 +360,26 @@ const previewBody = body
 
   <label className="section-label">
     Email Template
-  </label>
+</label>
 
-  <div className="template-grid">
+<div className="template-grid">
 
-    {templates.map((temp) => (
+  {/* Custom Email */}
+
+  <div
+    className={
+      selectedTemplate === null
+        ? "template-card active"
+        : "template-card"
+    }
+    onClick={useCustomEmail}
+  >
+    ✍️ Custom Email
+  </div>
+
+  {/* Existing Templates */}
+
+  {templates.map((temp) => (
 
       <div
         key={temp.id}
@@ -338,8 +395,7 @@ const previewBody = body
 
     ))}
 
-  </div>
-
+</div>
   <label>Email Body</label>
 
 <textarea
@@ -578,32 +634,29 @@ const previewBody = body
   <h3>AI Campaign Analysis</h3>
 
   <div className="analysis-item">
-
-    <span>Difficulty</span>
-
-    <strong>{difficulty}</strong>
-
-  </div>
-
-  <div className="analysis-item">
-
-    <span>Risk Score</span>
-
-    <strong>{riskScore}%</strong>
-
-  </div>
-
-  <div className="analysis-item">
-
-    <span>Template</span>
-
-    <strong>{template}</strong>
-
-  </div>
-
+  <span>Difficulty</span>
+  <strong>{difficulty}</strong>
 </div>
 
-{/* ===================== RISK SCORE ===================== */}
+<div className="analysis-item">
+  <span>Risk Score</span>
+  <strong>{riskScore}%</strong>
+</div>
+
+<div className="analysis-item">
+  <span>Risk Level</span>
+  <strong>{riskLevel}</strong>
+</div>
+
+<div className="analysis-item">
+  <span>Threat Type</span>
+  <strong>{threatType}</strong>
+</div>
+
+<div className="analysis-item">
+  <span>Template</span>
+  <strong>{template}</strong>
+</div></div>{/* ===================== RISK SCORE ===================== */}
 
 <div className="card">
 
@@ -630,18 +683,59 @@ const previewBody = body
 
   <div className="keyword-list">
 
-    {suspiciousWords.map((word) => (
+    {suspiciousWords.length > 0 ? (
 
-      <span
-        key={word}
-        className="keyword-chip"
-      >
-        {word}
-      </span>
+  suspiciousWords.map((word) => (
+    <span
+      key={word}
+      className="keyword-chip"
+    >
+      {word}
+    </span>
+  ))
 
-    ))}
+) : (
 
+  <p>No suspicious keywords detected.</p>
+
+)}
   </div>
+
+</div>
+<div className="card">
+
+  <h3>Analysis Reasons</h3>
+
+  {analysisReasons.map((reason, index) => (
+
+    <p key={index}>
+      • {reason}
+    </p>
+
+  ))}
+
+</div>
+<div className="card">
+
+  <h3>Trend Analysis</h3>
+
+  {trendAnalysis && (
+
+    <>
+      <p><strong>Trend:</strong> {trendAnalysis.overall_trend}</p>
+
+      <p><strong>Average Click Rate:</strong> {trendAnalysis.average_click_rate}</p>
+
+      <p><strong>Total Campaigns:</strong> {trendAnalysis.total_campaigns}</p>
+
+      <p><strong>Total Clicks:</strong> {trendAnalysis.total_clicks}</p>
+
+      <p><strong>High Risk Campaigns:</strong> {trendAnalysis.high_risk_campaigns}</p>
+
+      <p><strong>Most Common Difficulty:</strong> {trendAnalysis.most_common_difficulty}</p>
+    </>
+
+  )}
 
 </div>
 

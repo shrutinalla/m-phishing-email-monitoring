@@ -123,10 +123,14 @@
   background: white;
 }
 
-.employee-table thead {
+.employee-table thead tr {
   background: #2563eb;
+}
 
-  color: white;
+.employee-table thead th {
+  background: #2563eb;
+  color: #ffffff !important;
+  font-weight: 600;
 }
 
 .employee-table th,
@@ -140,12 +144,15 @@
   vertical-align: top;
 
   font-size: 14px;
+  color: #374151;
 }
 
 .employee-table tbody tr:nth-child(even) {
-  background: #f9fafb;
+  background: #f8fafb;
 }
-
+.employee-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
 .employee-table tbody tr:hover {
   background: #eef4ff;
 }
@@ -174,7 +181,7 @@
   .employee-table th,
   .employee-table td {
     font-size: 13px;
-
+    color:#ffffff ! important;
     padding: 10px;
   }
 }
