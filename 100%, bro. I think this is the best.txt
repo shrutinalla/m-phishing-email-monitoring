@@ -1,3 +1,17 @@
+9. Seed Database
+
+Very useful.
+
+init_db.py
+
+seed_db.py
+
+.env.example
+
+Makes project reproducible.
+
+Priority:
+⭐⭐☆☆☆
 100%, bro. I think this is the best plan.
 
 ## Tomorrow at MIDHANI
