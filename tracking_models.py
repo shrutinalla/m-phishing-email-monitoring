@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, String
 from datetime import datetime
 from models import Base
 
@@ -21,4 +21,14 @@ class ClickLog(Base):
     clicked_time = Column(
         DateTime,
         default=datetime.utcnow
+    )
+
+    ip_address = Column(
+        String(100),
+        nullable=True
+    )
+
+    user_agent = Column(
+        String(500),
+        nullable=True
     )

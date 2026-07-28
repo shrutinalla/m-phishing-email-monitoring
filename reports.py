@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -171,3 +171,88 @@ def export_reports(db: Session = Depends(get_db)):
             "Content-Disposition": "attachment; filename=campaign_reports.csv"
         },
     )
+@router.get("/reports/campaign/{campaign_id}")
+def get_campaign_details(
+    campaign_id: int,
+    db: Session = Depends(get_db)
+):
+
+    campaign = (
+        db.query(Campaign)
+        .filter(Campaign.id == campaign_id)
+        .first()
+    )
+
+    if not campaign:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    click_logs = (
+        db.query(
+            ClickLog,
+            Employee
+        )
+        .join(
+            Employee,
+            Employee.id == ClickLog.employee_id
+        )
+        .filter(
+            ClickLog.campaign_id == campaign_id
+        )
+        .all()
+    )
+
+    employees = []
+
+    for click, employee in click_logs:
+
+        employees.append(
+            {
+                "employee_id": employee.id,
+                "employee_name": employee.name,
+                "email": employee.email,
+                "clicked": True,
+                "clicked_time": click.clicked_time,
+                "ip_address": click.ip_address,
+                "user_agent": click.user_agent,
+            }
+        )
+
+    click_rate = (
+        round(
+            (len(employees) / campaign.total_recipients) * 100,
+            2
+        )
+        if campaign.total_recipients > 0
+        else 0
+    )
+
+    return {
+
+        "campaign": {
+
+            "campaign_id": campaign.id,
+            "campaign_name": campaign.campaign_name,
+            "email_subject": campaign.email_subject,
+            "email_template": campaign.email_template,
+            "difficulty": campaign.difficulty,
+            "status": campaign.status,
+
+            "attachment_name": campaign.attachment_name,
+            "attachment_type": campaign.attachment_type,
+
+            "created_at": campaign.created_at,
+            "start_date": campaign.start_date,
+            "end_date": campaign.end_date,
+
+            "total_recipients": campaign.total_recipients,
+            "emails_sent": campaign.emails_sent,
+            "emails_failed": campaign.emails_failed,
+            "emails_clicked": len(employees),
+            "click_rate": click_rate,
+        },
+
+        "employees": employees,
+    }

@@ -5,8 +5,32 @@ export const createCampaign = async (campaignData) => {
   return response.data;
 };
 
+export const uploadCampaignAttachment = async (
+  campaignId,
+  attachment
+) => {
+  const formData = new FormData();
+
+  formData.append("attachment", attachment);
+
+  const response = await api.post(
+    `/campaigns/${campaignId}/attachment`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};
+
 export const sendCampaign = async (campaignId) => {
-  const response = await api.post(`/mail/send-campaign/${campaignId}`);
+  const response = await api.post(
+    `/mail/send-campaign/${campaignId}`
+  );
+
   return response.data;
 };
 

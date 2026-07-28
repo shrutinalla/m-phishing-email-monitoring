@@ -1,3 +1,10 @@
+import os
+import shutil
+import uuid
+
+
+
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -9,8 +16,9 @@ from tracking_models import ClickLog
 from template_models import EmailTemplate
 from auth_dependency import get_current_admin
 from audit_models import AuditLog
+from zoneinfo import ZoneInfo
 from datetime import datetime
-
+from fastapi import UploadFile, File
 from campaign_schemas import (
     CampaignCreate,
     CampaignUpdate,
@@ -65,7 +73,7 @@ def create_campaign(
         performed_by="Admin",
         module="Campaign",
         details=f"Campaign '{new_campaign.campaign_name}' created",
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
     db.add(log)
@@ -403,7 +411,94 @@ def department_analytics(
         })
 
     return result
+@router.post("/campaigns/{campaign_id}/attachment")
+async def upload_campaign_attachment(
+    campaign_id: int,
+    attachment: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
+):
 
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    allowed_extensions = {
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".ppt",
+        ".pptx",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".zip"
+    }
+
+    extension = os.path.splitext(
+        attachment.filename
+    )[1].lower()
+
+    if extension not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported attachment type"
+        )
+
+    upload_dir = os.path.join(
+        "uploads",
+        "attachments"
+    )
+
+    os.makedirs(
+        upload_dir,
+        exist_ok=True
+    )
+
+    unique_filename = (
+        f"{uuid.uuid4()}{extension}"
+    )
+
+    file_path = os.path.join(
+        upload_dir,
+        unique_filename
+    )
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(
+            attachment.file,
+            buffer
+        )
+
+    campaign.attachment_name = attachment.filename
+    campaign.attachment_path = file_path
+    campaign.attachment_type = attachment.content_type
+
+    campaign.attachment_size = os.path.getsize(
+        file_path
+    )
+
+    db.commit()
+
+    return {
+
+        "message": "Attachment uploaded successfully",
+
+        "attachment_name": campaign.attachment_name,
+
+        "attachment_size": campaign.attachment_size,
+
+        "attachment_type": campaign.attachment_type
+
+    }
 
 # -------------------------------
 # DELETE CAMPAIGN

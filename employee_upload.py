@@ -5,6 +5,7 @@ from models import Employee
 from audit_models import AuditLog
 from auth_dependency import get_current_admin
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import pandas as pd
 
 
@@ -61,7 +62,7 @@ def upload_employees(
 
         details=f"{count} employees uploaded",
 
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
 
     )
 

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from zoneinfo import ZoneInfo
 from datetime import datetime
 
 from database import get_db
@@ -120,7 +121,7 @@ def login_admin(
         performed_by=existing.username,
         module="Authentication",
         details="Administrator logged into the system",
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
 
@@ -184,7 +185,7 @@ def change_password(
         performed_by=admin,
         module="Authentication",
         details="Administrator changed password",
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
 
@@ -209,7 +210,7 @@ def logout_admin(
         performed_by=current_admin,
         module="Authentication",
         details="Administrator logged out of the system",
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
     db.add(log)

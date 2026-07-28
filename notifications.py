@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from database import get_db
 from notification_models import Notification
@@ -22,7 +23,7 @@ def create_notification(
         message=message,
         notification_type=notification_type,
         status="Unread",
-        created_at=datetime.utcnow()
+        created_at=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
     db.add(notification)

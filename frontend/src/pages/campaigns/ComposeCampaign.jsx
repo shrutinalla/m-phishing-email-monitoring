@@ -5,6 +5,7 @@ import { getEmployees } from "../../services/employeeService";
 import { getTemplates, getTemplate } from "../../services/templateService";
 import {
   createCampaign,
+  uploadCampaignAttachment,
   sendCampaign,
 } from "../../services/campaignService";
 
@@ -80,8 +81,10 @@ const handleTemplateSelect = async (templateId) => {
 
 const handleSendCampaign = async () => {
   try {
-
-    console.log("Selected Template:", selectedTemplate);
+    if (!selectedTemplate) {
+      alert("Please select an email template.");
+      return;
+    }
 
     const campaignData = {
       campaign_name: template,
@@ -92,22 +95,34 @@ const handleSendCampaign = async () => {
       template_id: selectedTemplate,
     };
 
-    console.log("Campaign Data:", campaignData);
+    // Create campaign
+    const campaign = await createCampaign(campaignData);
 
-   const campaign = await createCampaign(campaignData);
+    // Upload attachment (if selected)
+    if (attachment) {
+      await uploadCampaignAttachment(
+        campaign.campaign_id,
+        attachment
+      );
+    }
 
-console.log("Campaign Response:", campaign);
-console.log("Campaign ID:", campaign.campaign_id);
+    // Send campaign
+    const result = await sendCampaign(
+      campaign.campaign_id
+    );
 
-const result = await sendCampaign(campaign.campaign_id);
+    console.log(result);
 
-console.log("Send Campaign Response:", result);
-
-alert("Campaign sent successfully!");
+    alert("Campaign sent successfully!");
 
   } catch (error) {
     console.error(error);
-    alert("Failed to send campaign.");
+
+    if (error.response?.data?.detail) {
+      alert(error.response.data.detail);
+    } else {
+      alert("Failed to send campaign.");
+    }
   }
 };
  

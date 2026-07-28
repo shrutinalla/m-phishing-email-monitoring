@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+from zoneinfo import ZoneInfo
 from database import get_db
 from audit_models import AuditLog
 from audit_schemas import AuditLogCreate
@@ -24,7 +24,7 @@ def create_audit_log(
         performed_by=log.performed_by,
         module=log.module,
         details=log.details,
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(ZoneInfo("Asia/Kolkata"))
     )
 
     db.add(new_log)

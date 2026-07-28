@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from jose import jwt
 from datetime import datetime, timedelta
 
@@ -10,7 +12,7 @@ def create_access_token(data: dict):
 
     to_encode = data.copy()
 
-    expire = datetime.utcnow() + timedelta(
+    expire = datetime.now(ZoneInfo("Asia/Kolkata")) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 

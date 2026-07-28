@@ -47,20 +47,6 @@ def create_employee(
     db.commit()
     db.refresh(emp)
 
-
-    # Audit Log
-    # log = AuditLog(
-    #     action="Employee Added",
-    #     performed_by=admin,
-    #     module="Employee",
-    #     details=f"Employee '{emp.name}' added",
-    #     timestamp=datetime.utcnow()
-    # )
-
-    # db.add(log)
-    # db.commit()
-
-
     return {
         "message": "Employee added successfully",
         "employee_id": emp.id
@@ -311,21 +297,6 @@ def update_employee(
 
 
 
-    # Audit Log
-    # log = AuditLog(
-    #     action="Employee Updated",
-    #     performed_by=admin,
-    #     module="Employee",
-    #     details=f"Employee '{emp.name}' updated",
-    #     timestamp=datetime.utcnow()
-    # )
-
-
-    # db.add(log)
-    # db.commit()
-
-
-
     return {
         "message": "Employee updated successfully",
         "employee": {
@@ -393,20 +364,6 @@ def delete_employee(
     db.delete(employee)
     db.commit()
 
-
-
-    # Audit Log
-    # log = AuditLog(
-    #     action="Employee Deleted",
-    #     performed_by=admin,
-    #     module="Employee",
-    #     details=f"Employee '{employee_name}' deleted",
-    #     timestamp=datetime.utcnow()
-    # )
-
-
-    # db.add(log)
-    # db.commit()
 
 
 

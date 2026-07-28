@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import api from "../../services/api";
+import CampaignDetailsModal from "../../components/reports/CampaignDetailsModal";
+import {
+  getReports,
+  getCampaignDetails,
+  exportReports,
+} from "../../services/reportService";
 import "./Reports.css";
 
 function Reports() {
@@ -11,6 +16,9 @@ function Reports() {
   const [campaigns, setCampaigns] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
 
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -18,17 +26,17 @@ function Reports() {
     try {
       setLoading(true);
 
-      const response = await api.get("/reports");
-
-      const data = response.data;
+      const data = await getReports();
 
       setSummary(data.summary);
-
       setCampaigns(data.campaign_reports);
 
-      const activities = data.campaign_reports.slice(0, 5).map((campaign) => {
-        return `${campaign.campaign_name} (${campaign.status}) - ${campaign.emails_clicked} click(s)`;
-      });
+      const activities = data.campaign_reports
+        .slice(0, 5)
+        .map(
+          (campaign) =>
+            `${campaign.campaign_name} (${campaign.status}) - ${campaign.emails_clicked} click(s)`
+        );
 
       setRecentActivities(activities);
     } catch (err) {
@@ -43,8 +51,21 @@ function Reports() {
     fetchReports();
   }, []);
 
-  const exportCSV = () => {
-    window.open("http://127.0.0.1:8000/reports/export", "_blank");
+  const handleExportCSV = () => {
+    exportReports();
+  };
+
+  const handleViewCampaign = async (campaignId) => {
+    try {
+      const data = await getCampaignDetails(campaignId);
+
+      setSelectedCampaign(data);
+
+      setShowModal(true);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load campaign details.");
+    }
   };
 
   const reportStats = [
@@ -71,9 +92,13 @@ function Reports() {
   ];
 
   const filteredCampaigns = campaigns.filter((item) => {
-    const matchesSearch = item.campaign_name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+    const query = search.toLowerCase();
+
+    const matchesSearch =
+      item.campaign_name?.toLowerCase().includes(query) ||
+      item.email_subject?.toLowerCase().includes(query) ||
+      item.difficulty?.toLowerCase().includes(query) ||
+      item.status?.toLowerCase().includes(query);
 
     const matchesStatus =
       statusFilter === "All"
@@ -102,7 +127,6 @@ function Reports() {
       </DashboardLayout>
     );
   }
-
   return (
     <DashboardLayout>
       <div className="reports-page">
@@ -116,7 +140,7 @@ function Reports() {
             </p>
           </div>
 
-          <button className="export-btn" onClick={exportCSV}>
+          <button className="export-btn" onClick={handleExportCSV}>
             Export CSV
           </button>
         </div>
@@ -158,8 +182,7 @@ function Reports() {
             </select>
           </div>
         </div>
-
-        <div className="table-card">
+                <div className="table-card">
           <h3>Campaign Summary</h3>
 
           <div className="table-wrapper">
@@ -179,7 +202,8 @@ function Reports() {
                 </tr>
               </thead>
 
-              <tbody>                {filteredCampaigns.length === 0 ? (
+              <tbody>
+                {filteredCampaigns.length === 0 ? (
                   <tr>
                     <td colSpan="10" style={{ textAlign: "center" }}>
                       No campaigns found.
@@ -216,23 +240,7 @@ function Reports() {
                         <button
                           className="view-btn"
                           onClick={() =>
-                            alert(
-                              `Campaign: ${item.campaign_name}
-
-Subject: ${item.email_subject || "-"}
-
-Difficulty: ${item.difficulty}
-
-Recipients: ${item.total_recipients}
-
-Emails Sent: ${item.emails_sent}
-
-Emails Failed: ${item.emails_failed}
-
-Emails Clicked: ${item.emails_clicked}
-
-Click Rate: ${item.click_rate}%`
-                            )
+                            handleViewCampaign(item.campaign_id)
                           }
                         >
                           View
@@ -328,10 +336,15 @@ Click Rate: ${item.click_rate}%`
             )}
           </div>
         </div>
+
+        <CampaignDetailsModal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          campaignData={selectedCampaign}
+        />
       </div>
     </DashboardLayout>
   );
 }
 
 export default Reports;
-              
