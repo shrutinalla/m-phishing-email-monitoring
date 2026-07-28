@@ -247,9 +247,27 @@ def create_template(
 def get_templates(
     db: Session = Depends(get_db)
 ):
-    return db.query(EmailTemplate).all()
+    templates = db.query(EmailTemplate).all()
 
+    result = []
 
+    for template in templates:
+
+        campaign_count = db.query(Campaign).filter(
+            Campaign.template_id == template.id
+        ).count()
+
+        result.append(
+            {
+                "id": template.id,
+                "template_name": template.template_name,
+                "subject": template.subject,
+                "content": template.content,
+                "campaign_count": campaign_count
+            }
+        )
+
+    return result
 # -----------------------------
 # TEMPLATE DROPDOWN
 # -----------------------------
