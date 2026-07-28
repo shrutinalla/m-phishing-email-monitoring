@@ -1,0 +1,273 @@
+.templates-page {
+    padding: 30px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+.templates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.templates-header h1 {
+    margin: 0;
+    font-size: 30px;
+    color: #1f2937;
+}
+
+.templates-header p {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.create-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: .3s;
+}
+
+.create-btn:hover {
+    background: #1d4ed8;
+}
+
+.search-card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+}
+
+.search-card input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-card input:focus {
+    border-color: #2563eb;
+}
+
+.table-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+}
+
+.template-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.template-table thead {
+    background: #2563eb;
+    color: white;
+}
+
+.template-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.template-table td {
+    padding: 15px;
+    border-bottom: 1px solid #ececec;
+    vertical-align: middle;
+}
+
+.template-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.preview-btn,
+.edit-btn,
+.delete-btn,
+.count-btn {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 14px;
+    transition: .25s;
+}
+
+.preview-btn {
+    background: #0ea5e9;
+    color: white;
+}
+
+.preview-btn:hover {
+    background: #0284c7;
+}
+
+.edit-btn {
+    background: #22c55e;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #16a34a;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+
+.count-btn {
+    background: #6366f1;
+    color: white;
+}
+
+.count-btn:hover {
+    background: #4f46e5;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal,
+.preview-modal {
+    background: white;
+    width: 750px;
+    max-width: 95%;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.25);
+}
+
+.modal h2,
+.preview-modal h2 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: #1f2937;
+}
+
+.modal input,
+.modal textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    resize: vertical;
+    outline: none;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+    border-color: #2563eb;
+}
+
+.modal textarea {
+    min-height: 220px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background: #1d4ed8;
+}
+
+.cancel-btn {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background: #4b5563;
+}
+
+.preview-modal h4 {
+    margin-top: 5px;
+    color: #374151;
+}
+
+.preview-content {
+    margin-top: 18px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+    min-height: 250px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+
+    .templates-page {
+        padding: 15px;
+    }
+
+    .templates-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .template-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .modal,
+    .preview-modal {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .save-btn,
+    .cancel-btn {
+        width: 100%;
+    }
+}
