@@ -7,6 +7,7 @@ import {
   createCampaign,
   uploadCampaignAttachment,
   sendCampaign,
+  scheduleCampaign,
 } from "../../services/campaignService";
 
 function ComposeCampaign() {
@@ -18,6 +19,8 @@ function ComposeCampaign() {
   const [department, setDepartment] = useState("All Departments");
   const [search, setSearch] = useState("");
   const [schedule, setSchedule] = useState("now");
+  const [scheduleDate, setScheduleDate] = useState("");
+const [scheduleTime, setScheduleTime] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -132,25 +135,27 @@ const handleTemplateSelect = async (templateId) => {
 };
 
 const handleSendCampaign = async () => {
+
   try {
+
     if (!subject.trim() || !body.trim()) {
-  alert("Subject and Email Body are required.");
-  return;
-}
+      alert("Subject and Email Body are required.");
+      return;
+    }
 
     const campaignData = {
-  campaign_name: selectedTemplate
-    ? template
-    : subject,
+      campaign_name: selectedTemplate
+        ? template
+        : subject,
 
-  email_subject: subject,
-  email_template: body,
+      email_subject: subject,
+      email_template: body,
 
-  difficulty,
-  status: "Draft",
+      difficulty,
+      status: "Draft",
 
-  template_id: selectedTemplate,
-};
+      template_id: selectedTemplate,
+    };
 
     // Create campaign
     const campaign = await createCampaign(campaignData);
@@ -158,12 +163,35 @@ const handleSendCampaign = async () => {
     // Upload attachment (if selected)
     if (attachment) {
       await uploadCampaignAttachment(
-        campaign.id,
+        campaign.campaign_id,
         attachment
       );
     }
 
-    // Send campaign
+    // Schedule Later
+    if (schedule === "later") {
+
+      if (!scheduleDate || !scheduleTime) {
+        alert("Please select schedule date and time.");
+        return;
+      }
+
+      const scheduledDateTime =
+        `${scheduleDate}T${scheduleTime}:00`;
+
+      await scheduleCampaign(
+        campaign.campaign_id,
+        {
+          start_date: scheduledDateTime,
+          end_date: scheduledDateTime,
+        }
+      );
+
+      alert("Campaign scheduled successfully!");
+      return;
+    }
+
+    // Send Now
     const result = await sendCampaign(
       campaign.campaign_id
     );
@@ -173,6 +201,7 @@ const handleSendCampaign = async () => {
     alert("Campaign sent successfully!");
 
   } catch (error) {
+
     console.error(error);
 
     if (error.response?.data?.detail) {
@@ -180,9 +209,65 @@ const handleSendCampaign = async () => {
     } else {
       alert("Failed to send campaign.");
     }
+
   }
+
 };
- 
+const handleSaveDraft = async () => {
+
+  try {
+
+    if (!subject.trim() || !body.trim()) {
+
+      alert("Subject and Email Body are required.");
+
+      return;
+
+    }
+
+    const campaignData = {
+
+      campaign_name: selectedTemplate
+        ? template
+        : subject,
+
+      email_subject: subject,
+
+      email_template: body,
+
+      difficulty,
+
+      status: "Draft",
+
+      template_id: selectedTemplate,
+
+    };
+
+    await createCampaign(campaignData);
+
+    alert("Draft saved successfully!");
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    if (error.response?.data?.detail) {
+
+      alert(error.response.data.detail);
+
+    }
+
+    else {
+
+      alert("Failed to save draft.");
+
+    }
+
+  }
+
+};
 const loadEmployees = async () => {
   try {
     const data = await getEmployees();
@@ -540,7 +625,11 @@ const previewBody = body
 
         <label>Date</label>
 
-        <input type="date" />
+        <input
+  type="date"
+  value={scheduleDate}
+  onChange={(e) => setScheduleDate(e.target.value)}
+/>
 
       </div>
 
@@ -548,8 +637,11 @@ const previewBody = body
 
         <label>Time</label>
 
-        <input type="time" />
-
+        <input
+  type="time"
+  value={scheduleTime}
+  onChange={(e) => setScheduleTime(e.target.value)}
+/>
       </div>
 
     </div>
@@ -566,9 +658,12 @@ const previewBody = body
     Cancel
   </button>
 
-  <button className="secondary-btn">
+  <button
+    className="secondary-btn"
+    onClick={handleSaveDraft}
+>
     Save Draft
-  </button>
+</button>
 
 <button
     className="primary-btn"

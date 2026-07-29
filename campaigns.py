@@ -273,7 +273,7 @@ def schedule_campaign(
     campaign_id: int,
     schedule: CampaignSchedule,
     db: Session = Depends(get_db),
-    admin: str = Depends(get_current_admin)
+    
 ):
 
     campaign = db.query(Campaign).filter(
@@ -298,7 +298,44 @@ def schedule_campaign(
         "start_date": campaign.start_date,
         "end_date": campaign.end_date
     }
+# -------------------------------
+# COMPLETE CAMPAIGN
+# -------------------------------
 
+@router.post("/campaigns/{campaign_id}/complete")
+def complete_campaign(
+    campaign_id: int,
+    db: Session = Depends(get_db),
+):
+
+    campaign = db.query(Campaign).filter(
+        Campaign.id == campaign_id
+    ).first()
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    if campaign.status != "Running":
+        raise HTTPException(
+            status_code=400,
+            detail="Only running campaigns can be completed."
+        )
+
+    campaign.status = "Completed"
+
+    campaign.end_date = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    db.commit()
+
+    return {
+        "message": "Campaign completed successfully",
+        "status": campaign.status
+    }
 
 # -------------------------------
 # CAMPAIGN ANALYTICS
@@ -527,4 +564,5 @@ def delete_campaign(
     return {
         "message": "Campaign deleted successfully"
     }
+
 

@@ -147,20 +147,26 @@ def export_reports(db: Session = Depends(get_db)):
         )
 
         writer.writerow([
-            campaign.campaign_name,
-            campaign.email_subject,
-            campaign.email_template,
-            campaign.difficulty,
-            campaign.status,
-            campaign.total_recipients,
-            campaign.emails_sent,
-            campaign.emails_failed,
-            click_count,
-            click_rate,
-            campaign.created_at,
-            campaign.start_date,
-            campaign.end_date,
-        ])
+    campaign.campaign_name,
+    campaign.email_subject,
+    campaign.email_template,
+    campaign.difficulty,
+    campaign.status,
+    campaign.total_recipients,
+    campaign.emails_sent,
+    campaign.emails_failed,
+    click_count,
+    click_rate,
+
+    campaign.created_at.strftime("%d-%m-%Y %H:%M:%S")
+    if campaign.created_at else "",
+
+    campaign.start_date.strftime("%d-%m-%Y %H:%M:%S")
+    if campaign.start_date else "",
+
+    campaign.end_date.strftime("%d-%m-%Y %H:%M:%S")
+    if campaign.end_date else "",
+])
 
     output.seek(0)
 

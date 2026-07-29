@@ -43,3 +43,21 @@ export const getCampaignDashboard = async () => {
   const response = await api.get("/campaigns/dashboard");
   return response.data;
 };
+export const completeCampaign = async (campaignId) => {
+  const response = await api.post(
+    `/campaigns/${campaignId}/complete`
+  );
+
+  return response.data;
+};
+export const scheduleCampaign = async (
+  campaignId,
+  scheduleData
+) => {
+  const response = await api.put(
+    `/campaigns/${campaignId}/schedule`,
+    scheduleData
+  );
+
+  return response.data;
+};

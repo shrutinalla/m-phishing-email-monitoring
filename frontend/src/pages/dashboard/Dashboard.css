@@ -292,3 +292,80 @@ td{
     color:#0f172a;
 
 }
+.quick-actions{
+
+    margin-top:35px;
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:16px;
+
+    border:1px solid #eef2f7;
+
+    box-shadow:0 4px 12px rgba(15,23,42,.06);
+
+}
+
+.quick-actions h2{
+
+    margin-bottom:25px;
+
+    color:#13294B;
+
+}
+
+.quick-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:18px;
+
+}
+
+.quick-grid button{
+
+    border:none;
+
+    background:#f8fbff;
+
+    border-radius:14px;
+
+    padding:28px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:32px;
+
+    transition:.25s;
+
+}
+
+.quick-grid button:hover{
+
+    transform:translateY(-5px);
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.quick-grid span{
+
+    font-size:15px;
+
+    font-weight:600;
+
+}

@@ -8,21 +8,38 @@ import {
 } from "react-icons/fa";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getDashboard } from "../../services/dashboardService";
-
-
+import routes from "../../utils/routes";
   function Dashboard() {
 
   const [stats, setStats] = useState({
-    total_employees: 0,
-    clicked: 0,
-    high_risk: 0,
-    safe: 0,
-  });
 
+    total_employees:0,
+
+    total_campaigns:0,
+
+    running_campaigns:0,
+
+    completed_campaigns:0,
+
+    emails_sent:0,
+
+    emails_failed:0,
+
+    total_clicks:0,
+
+    click_rate:0,
+
+    high_risk_employees:0
+
+});
+const navigate = useNavigate();
   const loadDashboard = async () => {
     try {
       const data = await getDashboard();
+      console.log("Dashboard API Response:", data);
       setStats(data);
     } catch (err) {
       console.log(err);
@@ -98,7 +115,9 @@ import { getDashboard } from "../../services/dashboardService";
             </div>
 
             <div>
-              <h2>{stats.safe}</h2>
+              <h2>
+  {stats.safe}
+</h2>
               <span>Safe Employees</span>
             </div>
 
@@ -114,7 +133,9 @@ import { getDashboard } from "../../services/dashboardService";
 
               <h2>Recent Campaigns</h2>
 
-              <button>View All</button>
+              <button onClick={() => navigate(routes.REPORTS)}>
+  View All
+</button>
 
             </div>
 
@@ -159,53 +180,130 @@ import { getDashboard } from "../../services/dashboardService";
 
   <div className="circle">
 
-    <h1>--</h1>
+    <h1>
+  {stats.total_employees > 0
+    ? Math.round(
+        (stats.safe/stats.total_employees) *
+          100
+      )
+    : 0}
+%
+</h1>
 
-    <span>No Data Yet</span>
-
-  </div>
-
-  <div className="overview-row">
-
-    <span>
-      <FaArrowUp />
-      Awareness Score
-    </span>
-
-    <strong>--</strong>
+    <span>Security Score</span>
 
   </div>
 
   <div className="overview-row">
 
-    <span>Emails Sent</span>
+  <span>
+    <FaArrowUp />
+    Awareness Score
+  </span>
 
-    <strong>--</strong>
-
-  </div>
-
-  <div className="overview-row">
-
-    <span>Clicks Recorded</span>
-
-    <strong>--</strong>
-
-  </div>
-
-  <div className="overview-row">
-
-    <span>Departments Covered</span>
-
-    <strong>--</strong>
-
-  </div>
+  <strong>
+    {stats.total_employees > 0
+      ? Math.round(
+          ((stats.safe) /
+stats.total_employees) *
+            100
+        ) + "%"
+      : "0%"}
+  </strong>
 
 </div>
+
+  <div className="overview-row">
+
+  <span>Total Campaigns</span>
+
+  <strong>{stats.total_campaigns}</strong>
+
+</div>
+
+  <div className="overview-row">
+
+  <span>Emails Sent</span>
+
+  <strong>{stats.emails_sent}</strong>
+
+</div>
+
+  <div className="overview-row">
+
+  <span>Click Rate</span>
+
+  <strong>{stats.click_rate}%</strong>
+
+</div>
+<div className="overview-row">
+
+  <span>Running Campaigns</span>
+
+  <strong>{stats.running_campaigns}</strong>
+
+</div>
+
+<div className="overview-row">
+
+  <span>Completed Campaigns</span>
+
+  <strong>{stats.completed_campaigns}</strong>
+
+</div>
+
+</div>
+
+              </div>
+
+        <div className="quick-actions">
+
+          <h2>Quick Actions</h2>
+
+          <div className="quick-grid">
+
+            <button
+              className="quick-card"
+              onClick={() => navigate(routes.CAMPAIGNS)}
+            >
+              <span className="quick-icon">📧</span>
+              <h3>Create Campaign</h3>
+              <p>Launch a phishing simulation.</p>
+            </button>
+
+            <button
+              className="quick-card"
+              onClick={() => navigate(routes.EMPLOYEES)}
+            >
+              <span className="quick-icon">👥</span>
+              <h3>Employees</h3>
+              <p>Manage employee records.</p>
+            </button>
+
+            <button
+              className="quick-card"
+              onClick={() => navigate(routes.REPORTS)}
+            >
+              <span className="quick-icon">📊</span>
+              <h3>Reports</h3>
+              <p>View campaign analytics.</p>
+            </button>
+
+            <button
+              className="quick-card"
+              onClick={() => navigate(routes.AWARENESS)}
+            >
+              <span className="quick-icon">🛡️</span>
+              <h3>Awareness</h3>
+              <p>Open security training.</p>
+            </button>
+
+          </div>
 
         </div>
 
       </div>
-    </DashboardLayout>
+    </DashboardLayout>  
   );
 }
 

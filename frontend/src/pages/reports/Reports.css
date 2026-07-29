@@ -208,14 +208,17 @@
   
 }
 
-.reports-table thead th {
-  padding: 16px;
-  text-align: left;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  color:#fff;
+.reports-table thead th{
+    background:#2563eb !important;
+    color:white !important;
+    padding:16px;
+    text-align:left;
+    font-weight:700;
+    opacity:1 !important;
+    visibility:visible;
+    position:sticky;
+    top:0;
+    z-index:5;
 }
 
 .reports-table tbody tr {
@@ -269,22 +272,40 @@
    VIEW BUTTON
 =========================== */
 
-.view-btn {
-  border: none;
-  background: #2563eb;
-  color: white;
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.25s;
+.view-btn{
+  border:none;
+  background:#2563eb;
+  color:white;
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:13px;
+  min-width:70px;
+  transition:.25s;
 }
 
 .view-btn:hover {
   background: #1d4ed8;
   transform: translateY(-2px);
 }
+.complete-btn{
+  border:none;
+  background:#16a34a;
+  color:white;
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:13px;
+  min-width:70px;
+  transition:.25s;
+}
 
+.complete-btn:hover{
+  background:#15803d;
+  transform:translateY(-2px);
+}
 /* ===========================
    TREND ANALYSIS
 =========================== */
@@ -301,10 +322,18 @@
   gap: 16px;
 }
 
-.trend-item span {
-  width: 40px;
-  font-weight: 600;
-  color: #374151;
+.trend-item span:first-child{
+    width:90px;
+    min-width:90px;
+    font-weight:600;
+    color:#374151;
+}
+
+.trend-item span:last-child{
+    width:35px;
+    text-align:right;
+    font-weight:600;
+    color:#374151;
 }
 
 .bar {
@@ -491,4 +520,17 @@ button:active {
 .status.draft {
   background: #e5e7eb;
   color: #374151;
+}
+.action-buttons{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:nowrap;
+}
+
+.action-buttons button{
+    min-width:70px;
+    padding:7px 12px;
+    font-size:13px;
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import CampaignDetailsModal from "../../components/reports/CampaignDetailsModal";
+import { completeCampaign } from "../../services/campaignService";
 import {
   getReports,
   getCampaignDetails,
@@ -67,6 +68,28 @@ function Reports() {
       alert("Failed to load campaign details.");
     }
   };
+  const handleComplete = async (campaignId) => {
+
+    if (!window.confirm("Are you sure you want to complete this campaign?")) {
+        return;
+    }
+
+    try {
+
+        await completeCampaign(campaignId);
+
+        await fetchReports();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Failed to complete campaign.");
+
+    }
+    
+
+};
 
   const reportStats = [
     {
@@ -107,7 +130,7 @@ function Reports() {
 
     return matchesSearch && matchesStatus;
   });
-
+const totalCampaigns = summary.total_campaigns || 1;
   if (loading) {
     return (
       <DashboardLayout>
@@ -237,15 +260,31 @@ function Reports() {
                       </td>
 
                       <td>
-                        <button
-                          className="view-btn"
-                          onClick={() =>
-                            handleViewCampaign(item.campaign_id)
-                          }
-                        >
-                          View
-                        </button>
-                      </td>
+ <div
+  className="action-buttons"
+>
+  
+    <button
+      className="view-btn"
+      onClick={() =>
+        handleViewCampaign(item.campaign_id)
+      }
+    >
+      View
+    </button>
+
+    {item.status === "Running" && (
+      <button
+  className="complete-btn"
+  onClick={() =>
+    handleComplete(item.campaign_id)
+  }
+>
+  Complete
+</button>
+    )}
+  </div>
+</td>
                     </tr>
                   ))
                 )}
@@ -265,7 +304,7 @@ function Reports() {
                 <div
                   className="fill"
                   style={{
-                    width: `${Math.min((summary.draft || 0) * 20, 100)}%`,
+                    width: `${((summary.draft || 0) / totalCampaigns) * 100}%`
                   }}
                 ></div>
               </div>
@@ -280,7 +319,7 @@ function Reports() {
                 <div
                   className="fill"
                   style={{
-                    width: `${Math.min((summary.running || 0) * 20, 100)}%`,
+                    width: `${((summary.running || 0) / totalCampaigns) * 100}%`
                   }}
                 ></div>
               </div>
@@ -295,7 +334,7 @@ function Reports() {
                 <div
                   className="fill"
                   style={{
-                    width: `${Math.min((summary.completed || 0) * 20, 100)}%`,
+                    width: `${((summary.completed || 0) / totalCampaigns) * 100}%`
                   }}
                 ></div>
               </div>
@@ -310,7 +349,7 @@ function Reports() {
                 <div
                   className="fill"
                   style={{
-                    width: `${Math.min((summary.failed || 0) * 20, 100)}%`,
+                   width: `${((summary.failed || 0) / totalCampaigns) * 100}%` 
                   }}
                 ></div>
               </div>

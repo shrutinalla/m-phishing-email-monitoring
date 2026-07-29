@@ -1,61 +1,20 @@
 import DashboardLayout from "../../components/layout/DashboardLayout";
+import Timeline from "../../components/awareness/Timeline";
+import RedFlags from "../../components/awareness/RedFlags";
+import Quiz from "../../components/awareness/Quiz";
+import Examples from "../../components/awareness/Examples";
+import DecisionSimulator from "../../components/awareness/DecisionSimulator";
+import Completion from "../../components/awareness/Completion";
 import "./Awareness.css";
+
+import {
+  awarenessStats,
+  awarenessModules,
+} from "../../Data/awarenessData";
 
 function AwarenessPage() {
 
-  const stats = [
-    {
-      title: "Employees Trained",
-      value: "182",
-      icon: "🎓"
-    },
-    {
-      title: "Completion Rate",
-      value: "84%",
-      icon: "✅"
-    },
-    {
-      title: "Pending Training",
-      value: "34",
-      icon: "⏳"
-    },
-    {
-      title: "Average Quiz Score",
-      value: "88%",
-      icon: "📊"
-    }
-  ];
-
-  const modules = [
-    {
-      id: 1,
-      title: "Recognizing Phishing Emails",
-      duration: "15 mins",
-      level: "Beginner",
-      status: "Completed"
-    },
-    {
-      id: 2,
-      title: "Credential Theft Awareness",
-      duration: "20 mins",
-      level: "Intermediate",
-      status: "In Progress"
-    },
-    {
-      id: 3,
-      title: "Safe Link Verification",
-      duration: "12 mins",
-      level: "Beginner",
-      status: "Pending"
-    },
-    {
-      id: 4,
-      title: "Email Security Best Practices",
-      duration: "18 mins",
-      level: "Advanced",
-      status: "Pending"
-    }
-  ];
+ 
 
   return (
 
@@ -90,7 +49,7 @@ function AwarenessPage() {
 
         <div className="stats-grid">
 
-          {stats.map((item) => (
+          {awarenessStats.map((item) => (
 
             <div
               key={item.title}
@@ -119,73 +78,7 @@ function AwarenessPage() {
 
         {/* ================= TRAINING MODULES ================= */}
 
-        <div className="modules-card">
-
-          <div className="card-header">
-
-            <h3>Training Modules</h3>
-
-            <button className="view-all-btn">
-
-              View All
-
-            </button>
-
-          </div>
-
-          <table className="modules-table">
-
-            <thead>
-
-              <tr>
-
-                <th>Module</th>
-
-                <th>Duration</th>
-
-                <th>Difficulty</th>
-
-                <th>Status</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {modules.map((module) => (
-
-                <tr key={module.id}>
-
-                  <td>{module.title}</td>
-
-                  <td>{module.duration}</td>
-
-                  <td>{module.level}</td>
-
-                  <td>
-
-                    <span
-                      className={`status ${module.status
-                        .toLowerCase()
-                        .replace(/\s/g, "-")}`}
-                    >
-
-                      {module.status}
-
-                    </span>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
+  <Timeline />
                {/* ================= SECURITY TIPS ================= */}
 
         <div className="tips-card">
@@ -220,110 +113,18 @@ function AwarenessPage() {
 
         {/* ================= QUIZ ================= */}
 
-        <div className="quiz-card">
+        <Quiz />
 
-          <div className="card-header">
+        <Examples />
 
-            <h3>Quick Security Quiz</h3>
+        <DecisionSimulator />
 
-            <button className="start-btn">
-
-              Start Quiz
-
-            </button>
-
-          </div>
-
-          <div className="quiz-content">
-
-            <h4>
-              Which of the following is a common sign of a phishing email?
-            </h4>
-
-            <div className="quiz-options">
-
-              <label>
-
-                <input type="radio" name="quiz" />
-
-                Urgent request for confidential information
-
-              </label>
-
-              <label>
-
-                <input type="radio" name="quiz" />
-
-                Email from verified internal HR
-
-              </label>
-
-              <label>
-
-                <input type="radio" name="quiz" />
-
-                Scheduled meeting invitation
-
-              </label>
-
-              <label>
-
-                <input type="radio" name="quiz" />
-
-                Company newsletter
-
-              </label>
-
-            </div>
-
-          </div>
-
-        </div>
-
+        
         {/* ================= NOTIFICATIONS ================= */}
 
-        <div className="notification-card">
+       <RedFlags />
 
-          <h3>Recent Awareness Updates</h3>
-
-          <div className="notification-list">
-
-            <div className="notification-item">
-
-              <div className="dot"></div>
-
-              <p>Monthly phishing awareness campaign launched.</p>
-
-            </div>
-
-            <div className="notification-item">
-
-              <div className="dot"></div>
-
-              <p>Credential Theft Awareness module updated.</p>
-
-            </div>
-
-            <div className="notification-item">
-
-              <div className="dot"></div>
-
-              <p>Quarterly security assessment scheduled.</p>
-
-            </div>
-
-            <div className="notification-item">
-
-              <div className="dot"></div>
-
-              <p>Password hygiene reminder sent to all employees.</p>
-
-            </div>
-
-          </div>
-
-        </div>
-
+       <Completion />
         {/* ================= RESOURCES ================= */}
 
         <div className="resources-card">

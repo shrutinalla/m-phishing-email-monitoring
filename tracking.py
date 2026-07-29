@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+from fastapi.responses import RedirectResponse
 from database import get_db
 from tracking_models import ClickLog
 from models import Employee
@@ -42,8 +42,7 @@ def track_click(
         employee.clicked = True
     db.commit()
 
-    return templates.TemplateResponse(
-    request=request,
-    name="awareness.html",
-    context={}
+    return RedirectResponse(
+    url="http://localhost:5173/warning",
+    status_code=302
 )

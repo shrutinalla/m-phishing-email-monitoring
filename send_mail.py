@@ -223,3 +223,44 @@ async def send_campaign(
         "total_employees": len(employees),
         "status": campaign.status
     }
+@router.post("/complete-campaign/{campaign_id}")
+def complete_campaign(
+    campaign_id: int,
+    db: Session = Depends(get_db)
+):
+
+    campaign = (
+        db.query(Campaign)
+        .filter(Campaign.id == campaign_id)
+        .first()
+    )
+
+    if campaign is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found"
+        )
+
+    campaign.status = "Completed"
+    campaign.end_date = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    db.commit()
+
+    audit = AuditLog(
+        action="Campaign Completed",
+        performed_by="Admin",
+        module="Campaign",
+        details=f"Campaign '{campaign.campaign_name}' marked as Completed",
+        timestamp=datetime.now(
+            ZoneInfo("Asia/Kolkata")
+        )
+    )
+
+    db.add(audit)
+    db.commit()
+
+    return {
+        "message": "Campaign marked as completed."
+    }

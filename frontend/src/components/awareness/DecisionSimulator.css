@@ -1,0 +1,135 @@
+.decision-card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:28px;
+    margin-top:40px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+.decision-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.decision-header h2{
+    margin:0;
+    color:#1f2937;
+}
+
+.decision-header span{
+    color:#2563eb;
+    font-weight:600;
+}
+
+.decision-email{
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    padding:20px;
+    background:#f9fafb;
+    margin-bottom:25px;
+}
+
+.decision-email p{
+    margin:10px 0;
+    line-height:1.6;
+    color:#374151;
+}
+
+.decision-email hr{
+    margin:15px 0;
+    border:none;
+    border-top:1px solid #d1d5db;
+}
+
+.decision-actions{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.decision-option{
+    padding:15px;
+    text-align:left;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    background:white;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.decision-option:hover:not(:disabled){
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.decision-option.selected{
+    border-color:#2563eb;
+    background:#dbeafe;
+}
+
+.decision-option.correct{
+    background:#dcfce7;
+    border-color:#22c55e;
+}
+
+.decision-option.wrong{
+    background:#fee2e2;
+    border-color:#ef4444;
+}
+
+.decision-btn{
+    margin-top:25px;
+    padding:12px 24px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.decision-btn:hover{
+    background:#1d4ed8;
+}
+
+.decision-explanation{
+    margin-top:25px;
+    padding:18px;
+    border-left:5px solid #2563eb;
+    background:#eff6ff;
+    border-radius:8px;
+}
+
+.decision-explanation strong{
+    color:#2563eb;
+}
+
+.decision-explanation p{
+    margin-top:10px;
+    line-height:1.6;
+}
+
+.decision-result{
+    text-align:center;
+    padding:20px;
+}
+
+.decision-result h2{
+    color:#2563eb;
+}
+
+.decision-result h3{
+    margin:20px 0;
+}
+
+@media(max-width:768px){
+
+    .decision-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+}

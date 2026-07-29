@@ -1,0 +1,93 @@
+.redflags-card{
+    background:#fff;
+    border-radius:14px;
+    padding:28px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.redflags-card h3{
+    margin:0;
+    color:#1f2937;
+}
+
+.redflags-subtitle{
+    margin:10px 0 28px;
+    color:#6b7280;
+}
+
+.redflags-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+}
+
+@media (max-width: 992px){
+    .redflags-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:768px){
+    .redflags-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+.redflag-item{
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:20px;
+    transition:.25s;
+    background:#fafafa;
+    display: flex;
+flex-direction: column;
+justify-content: space-between;
+min-height: 290px;
+}
+
+.redflag-item:hover{
+    transform:translateY(-4px);
+    border-color:#2563eb;
+}
+
+.redflag-icon{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#e8f0fe;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    margin-bottom:16px;
+}
+
+.redflag-item h4{
+    margin-bottom:12px;
+    color:#111827;
+}
+
+.redflag-item p{
+    color:#4b5563;
+    line-height:1.6;
+}
+
+.redflag-example{
+    margin-top:18px;
+    padding:12px;
+    border-radius:10px;
+    background:#eef4ff;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.redflag-example strong{
+    color:#2563eb;
+}
+
+.redflag-example span{
+    font-size:14px;
+    color:#374151;
+    word-break:break-word;
+}

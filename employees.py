@@ -5,7 +5,9 @@ from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from openpyxl import Workbook
 from datetime import datetime
+from campaign_models import Campaign
 
+from tracking_models import ClickLog
 from auth_dependency import get_current_admin
 from database import get_db
 from models import Employee
@@ -126,6 +128,7 @@ def employee_dashboard(
     db: Session = Depends(get_db)
 ):
 
+    # Employee Statistics
     total = db.query(Employee).count()
 
     clicked = db.query(Employee).filter(
@@ -136,38 +139,67 @@ def employee_dashboard(
         Employee.submitted_credentials == True
     ).count()
 
-
     high = submitted
-
 
     medium = db.query(Employee).filter(
         Employee.clicked == True,
         Employee.submitted_credentials == False
     ).count()
 
-
     low = total - high - medium
 
+    # Campaign Statistics
+    total_campaigns = db.query(Campaign).count()
+
+    running_campaigns = (
+        db.query(Campaign)
+        .filter(Campaign.status == "Running")
+        .count()
+    )
+
+    completed_campaigns = (
+        db.query(Campaign)
+        .filter(Campaign.status == "Completed")
+        .count()
+    )
+
+    campaigns = db.query(Campaign).all()
+
+    emails_sent = sum(
+        campaign.emails_sent or 0
+        for campaign in campaigns
+    )
+
+    emails_failed = sum(
+        campaign.emails_failed or 0
+        for campaign in campaigns
+    )
+
+    total_clicks = db.query(ClickLog).count()
+
+    click_rate = (
+        round((total_clicks / emails_sent) * 100, 2)
+        if emails_sent > 0
+        else 0
+    )
 
     return {
-
         "total_employees": total,
-
         "clicked": clicked,
-
         "submitted_credentials": submitted,
-
         "safe": low,
-
         "high_risk": high,
-
         "medium_risk": medium,
+        "low_risk": low,
 
-        "low_risk": low
-
+        "total_campaigns": total_campaigns,
+        "running_campaigns": running_campaigns,
+        "completed_campaigns": completed_campaigns,
+        "emails_sent": emails_sent,
+        "emails_failed": emails_failed,
+        "total_clicks": total_clicks,
+        "click_rate": click_rate
     }
-
-
 
 # -----------------------------
 # Employee Risk
