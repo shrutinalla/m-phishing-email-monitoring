@@ -141,6 +141,7 @@
 
 .view-all-btn:hover{
     background:#1d4ed8;
+    transform:translateY(-2px);
 }
 
 /* ===========================
@@ -164,7 +165,7 @@
 }
 
 .modules-table td{
-    padding:16px;
+    padding:14px 16px;
     border-bottom:1px solid #e5e7eb;
     color:#374151;
 }
@@ -264,12 +265,18 @@
 .quiz-options label{
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:14px;
+    justify-content:flex-start;
+    gap:14px;
+    padding:16px 18px;
     border:1px solid #e5e7eb;
     border-radius:10px;
     cursor:pointer;
     transition:.25s;
+    text-align:left;
+}
+.quiz-options input{
+    margin:0;
+    flex-shrink:0;
 }
 
 .quiz-options label:hover{
@@ -290,6 +297,7 @@
 
 .start-btn:hover{
     background:#1d4ed8;
+    transform:translateY(-2px);
 }
 
 /* ===========================
@@ -351,7 +359,8 @@
 
 .resource-btn:hover{
     background:#1d4ed8;
-    transform:translateY(-2px);
+    transform:translateY(-3px);
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
 }
 
 /* ===========================

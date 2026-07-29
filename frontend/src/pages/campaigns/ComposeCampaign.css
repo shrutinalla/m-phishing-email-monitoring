@@ -298,9 +298,20 @@ textarea{
 .upload-box{
     border:2px dashed #94a3b8;
     border-radius:12px;
-    padding:30px;
+    padding:45px 30px;
+    min-height:170px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
     text-align:center;
     background:#f8fafc;
+    transition:.25s;
+}
+
+.upload-box:hover{
+    border-color:#2563eb;
+    background:#eff6ff;
 }
 
 .upload-box input{
@@ -363,7 +374,10 @@ textarea{
 
 .primary-btn:hover{
     background:#1d4ed8;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
 }
+
 
 .secondary-btn{
     background:#e2e8f0;
@@ -371,6 +385,8 @@ textarea{
 
 .secondary-btn:hover{
     background:#cbd5e1;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
 }
 
 /* ===========================
@@ -382,6 +398,7 @@ textarea{
     border:1px solid #e2e8f0;
     border-radius:12px;
     padding:18px;
+    min-height:520px;
 }
 
 .preview-body{

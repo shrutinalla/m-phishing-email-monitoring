@@ -10,23 +10,6 @@ import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import { getDashboard } from "../../services/dashboardService";
 
-const recentCampaigns = [
-  {
-    name: "Fake HR Policy Update",
-    status: "Completed",
-    date: "20 Jul 2026",
-  },
-  {
-    name: "Password Reset Alert",
-    status: "Running",
-    date: "19 Jul 2026",
-  },
-  {
-    name: "VPN Configuration",
-    status: "Completed",
-    date: "17 Jul 2026",
-  },
-];
 
   function Dashboard() {
 
@@ -151,86 +134,73 @@ const recentCampaigns = [
 
               <tbody>
 
-                {recentCampaigns.map((campaign, index) => (
+  <tr>
+    <td
+      colSpan="3"
+      style={{
+        textAlign: "center",
+        padding: "40px",
+        color: "#6b7280",
+      }}
+    >
+      No campaigns have been created yet.
+    </td>
+  </tr>
 
-                  <tr key={index}>
-
-                    <td>{campaign.name}</td>
-
-                    <td>
-
-                      <span
-                        className={
-                          campaign.status === "Running"
-                            ? "status running"
-                            : "status completed"
-                        }
-                      >
-                        {campaign.status}
-                      </span>
-
-                    </td>
-
-                    <td>{campaign.date}</td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
+</tbody>
 
             </table>
 
           </div>
 
-          <div className="activity-card">
+         <div className="activity-card">
 
-            <h2>Security Overview</h2>
+  <h2>Security Overview</h2>
 
-            <div className="circle">
+  <div className="circle">
 
-              <h1>82%</h1>
+    <h1>--</h1>
 
-              <span>Protected</span>
+    <span>No Data Yet</span>
 
-            </div>
+  </div>
 
-            <div className="overview-row">
+  <div className="overview-row">
 
-              <span>
-                <FaArrowUp />
-                Awareness Score
-              </span>
+    <span>
+      <FaArrowUp />
+      Awareness Score
+    </span>
 
-              <strong>Excellent</strong>
+    <strong>--</strong>
 
-            </div>
+  </div>
 
-            <div className="overview-row">
+  <div className="overview-row">
 
-              <span>Emails Sent</span>
+    <span>Emails Sent</span>
 
-              <strong>1250</strong>
+    <strong>--</strong>
 
-            </div>
+  </div>
 
-            <div className="overview-row">
+  <div className="overview-row">
 
-              <span>Clicks Recorded</span>
+    <span>Clicks Recorded</span>
 
-              <strong>42</strong>
+    <strong>--</strong>
 
-            </div>
+  </div>
 
-            <div className="overview-row">
+  <div className="overview-row">
 
-              <span>Departments Covered</span>
+    <span>Departments Covered</span>
 
-              <strong>8</strong>
+    <strong>--</strong>
 
-            </div>
+  </div>
 
-          </div>
+</div>
 
         </div>
 

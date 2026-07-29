@@ -696,7 +696,7 @@ const previewBody = body
 
 ) : (
 
-  <p>No suspicious keywords detected.</p>
+  <p>No suspicious keywords identified.</p>
 
 )}
   </div>

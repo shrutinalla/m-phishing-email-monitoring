@@ -20,13 +20,14 @@
 }
 
 .logo-icon {
-    font-size: 34px;
+    font-size: 42px;
     color: #38bdf8;
 }
 
 .sidebar-logo h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: 30px;
+    font-weight: 700;
 }
 
 .sidebar-logo span {

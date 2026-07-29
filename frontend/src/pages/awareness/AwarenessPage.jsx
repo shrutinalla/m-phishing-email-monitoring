@@ -334,33 +334,48 @@ function AwarenessPage() {
 
           </div>
 
-          <div className="resource-grid">
+         <div className="resource-grid">
 
-            <button className="resource-btn">
+  <button
+    className="resource-btn"
+    onClick={() =>
+      window.open("/resources/phishing-awareness-guide.pdf", "_blank")
+    }
+  >
+    📄 Phishing Awareness Guide
+  </button>
 
-              📄 Phishing Awareness Guide
+  <button
+    className="resource-btn"
+    onClick={() =>
+      window.open("/resources/security-best-practices.pdf", "_blank")
+    }
+  >
+    📘 Security Best Practices
+  </button>
 
-            </button>
+  <button
+    className="resource-btn"
+    onClick={() =>
+      window.open(
+        "https://www.youtube.com/results?search_query=phishing+awareness+training",
+        "_blank"
+      )
+    }
+  >
+    🎥 Awareness Training Video
+  </button>
 
-            <button className="resource-btn">
+  <button
+    className="resource-btn"
+    onClick={() =>
+      window.open("/resources/security-handbook.pdf", "_blank")
+    }
+  >
+    📥 Download Security Handbook
+  </button>
 
-              📘 Security Best Practices
-
-            </button>
-
-            <button className="resource-btn">
-
-              🎥 Awareness Training Video
-
-            </button>
-
-            <button className="resource-btn">
-
-              📥 Download Security Handbook
-
-            </button>
-
-          </div>
+</div>
 
         </div>
 
